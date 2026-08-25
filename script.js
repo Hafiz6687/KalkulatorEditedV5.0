@@ -1471,7 +1471,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
                 <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
-                <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
+                <span class="label-rekod-BARU" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
             </div>
         </td>
         <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeNama}</strong></td>
