@@ -1370,8 +1370,14 @@ let namaPekerja = getV('inputNamaLaporan');
 
 window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
 
-window.bukaRekodSimpanan = function(id) {
+window.bukaRekodSimpanan = function(e) {
+    // Tangkap butang yang ditekan dan tarik ID yang disorokkan (data-id)
+    let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
+    if (!btn) return;
+    
+    let id = btn.getAttribute('data-id');
     let htmlContent = window.simpananHTMLGlobal[id];
+    
     if(htmlContent) {
         let tetingkapCetak = window.open('', '_blank'); 
         if (!tetingkapCetak) { alert("Pop-up disekat oleh pelayar web (browser) anda."); return; }
@@ -1383,8 +1389,14 @@ window.bukaRekodSimpanan = function(id) {
     }
 };
 
-window.hapusRekodSimpanan = function(btn, id) {
+window.hapusRekodSimpanan = function(e) {
+    // Tangkap butang yang ditekan dan tarik ID yang disorokkan (data-id)
+    let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
+    if (!btn) return;
+    
+    let id = btn.getAttribute('data-id');
     let sah = confirm("Adakah anda pasti mahu memadam rekod ini?");
+    
     if(sah) {
         if(window.simpananHTMLGlobal[id]) delete window.simpananHTMLGlobal[id];
         btn.closest('tr').remove();
@@ -1402,6 +1414,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
+    // PERHATIKAN: ID kini disorokkan dalam data-id="${unikId}" untuk elak dipotong sistem lama
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks};">
             <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
@@ -1410,8 +1423,8 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
         <td style="padding: 15px; font-size: 13px;"><strong style="color: #333;">${majikan || '-'}</strong></td>
         <td style="padding: 15px; text-align: center; font-size: 13px; color: #444;">${tempoh || '-'}</td>
         <td style="padding: 15px; text-align: center;">
-            <button onclick="bukaRekodSimpanan('${unikId}')" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📂 Buka</button>
-            <button onclick="hapusRekodSimpanan(this, '${unikId}')" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🗑️ Hapus</button>
+            <button data-id="${unikId}" onclick="bukaRekodSimpanan(event)" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📂 Buka</button>
+            <button data-id="${unikId}" onclick="hapusRekodSimpanan(event)" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🗑️ Hapus</button>
         </td>
     `;
     
