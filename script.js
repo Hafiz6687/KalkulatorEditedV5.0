@@ -1444,23 +1444,25 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let warnaTeks = jenis === 'penyata' ? '#198754' : '#0d6efd'; 
     let warnaBg   = jenis === 'penyata' ? '#d1e7dd' : '#cfe2ff';
 
-    // 1. PENAMBAHBAIKAN: Padamkan label "Baru" pada rekod-rekod lama supaya hanya yang terkini ada label ini
+    // Padamkan label "Baru" pada rekod-rekod lama supaya hanya yang terkini ada label ini
     let labelLama = tbody.querySelectorAll('.label-rekod-baru');
     labelLama.forEach(label => label.remove());
 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
-    // PERHATIKAN: Tambahan kod HTML untuk remark "Baru" dengan latar belakang kuning
+    // PERUBAHAN: Menambah <div> dengan paparan flex-column supaya tag 'Baru' berada tepat di bawah jenis teks
     tr.innerHTML = `
-        <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks};">
-            <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
-            <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px; display: inline-block; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
+        <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+                <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
+                <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
+            </div>
         </td>
-        <td style="padding: 15px; font-size: 13px;"><strong style="color: #333;">${namaPekerja || '-'}</strong></td>
-        <td style="padding: 15px; font-size: 13px;"><strong style="color: #333;">${majikan || '-'}</strong></td>
-        <td style="padding: 15px; text-align: center; font-size: 13px; color: #444;">${tempoh || '-'}</td>
-        <td style="padding: 15px; text-align: center;">
+        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${namaPekerja || '-'}</strong></td>
+        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${majikan || '-'}</strong></td>
+        <td style="padding: 15px; text-align: center; font-size: 13px; color: #444; vertical-align: middle;">${tempoh || '-'}</td>
+        <td style="padding: 15px; text-align: center; vertical-align: middle;">
             <button data-id="${unikId}" onclick="bukaRekodSimpanan(event)" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📂 Buka</button>
             <button data-id="${unikId}" onclick="hapusRekodSimpanan(event)" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🗑️ Hapus</button>
         </td>
@@ -1469,8 +1471,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let firstRow = tbody.querySelector('tr');
     if (firstRow && firstRow.innerHTML.includes('KBR/10103')) firstRow.remove();
 
-    // 2. PENAMBAHBAIKAN: Tukar prepend ke appendChild 
-    // Ini memastikan rekod yang terbaharu akan sentiasa berada di barisan paling BAWAH.
+    // Rekod baharu sentiasa di bawah
     tbody.appendChild(tr);
 }
 function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenisCetak, xtra, unikId) {
