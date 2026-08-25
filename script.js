@@ -1447,8 +1447,6 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let safeNama = namaPekerja || '-';
     let safeMajikan = majikan || '-';
 
-    // PENAMBAHBAIKAN: Hanya padam label "Baru" pada rekod yang mempunyai 
-    // Jenis, Nama Pekerja, dan Nama Majikan yang SAMA sahaja (Kemaskini).
     let semuaBaris = tbody.querySelectorAll('tr');
     semuaBaris.forEach(baris => {
         if (baris.getAttribute('data-jenis') === jenisTeks && 
@@ -1462,16 +1460,16 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
-    // Simpan data ke dalam <tr> supaya sistem boleh cam rekod yang sama pada masa akan datang
     tr.setAttribute('data-jenis', jenisTeks);
     tr.setAttribute('data-pekerja', safeNama);
     tr.setAttribute('data-majikan', safeMajikan);
     
+    // PERUBAHAN: Teks "Baru" ditukar kepada "BARU" huruf besar
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
                 <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
-                <span class="label-rekod-BARU" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
+                <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">BARU</span>
             </div>
         </td>
         <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeNama}</strong></td>
