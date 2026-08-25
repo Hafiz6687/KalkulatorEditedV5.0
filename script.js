@@ -2214,7 +2214,7 @@ function tunjukTourElaun(targetContainer) {
                 <span style="background: #1f4e79; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">💡</span>
                 Panduan Maklumat Elaun
             </h4>
-            <p style="margin: 0 0 10px 0; font-size: 12px; font-weight: bold; color: #333;">Maklumat Elaun adalah Elaun yang <span style="color:#d9534f;">SELAIN / TIDAK TERMASUK:</span></p>
+            <p style="margin: 0 0 10px 0; font-size: 12px; font-weight: bold; color: #333;">Elaun <span style="color:#d9534f;">SELAIN / TIDAK TERMASUK:</span></p>
             
             <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 11.5px; color: #555; line-height: 1.45;">
                 <li>NILAI tempat tinggal, bekalan makanan, minyak, lampu, air, rawatan perubatan atau yang diluluskan JTK;</li>
