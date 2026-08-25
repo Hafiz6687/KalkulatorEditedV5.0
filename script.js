@@ -1371,7 +1371,6 @@ let namaPekerja = getV('inputNamaLaporan');
 window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
 
 window.bukaRekodSimpanan = function(e) {
-    // Tangkap butang yang ditekan dan tarik ID yang disorokkan (data-id)
     let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
     if (!btn) return;
     
@@ -1379,6 +1378,15 @@ window.bukaRekodSimpanan = function(e) {
     let htmlContent = window.simpananHTMLGlobal[id];
     
     if(htmlContent) {
+        // PENAMBAHBAIKAN 1: Buang butang "Simpan" secara dinamik untuk paparan peringkat ini sahaja
+        htmlContent = htmlContent.replace(/<a[^>]*>💾 Simpan<\/a>/gi, '');
+
+        // PENAMBAHBAIKAN 2: Ubah fungsi Kemaskini supaya memanggil pengembali state kalkulator asal
+        htmlContent = htmlContent.replace(
+            /<a href="#" onclick="window\.close\(\); return false;">✏️ Kemaskini<\/a>/gi,
+            '<a href="#" onclick="if(window.opener && typeof window.opener.kembaliKeKalkulator === \'function\') { window.opener.kembaliKeKalkulator(); } window.close(); return false;">✏️ Kemaskini</a>'
+        );
+
         let tetingkapCetak = window.open('', '_blank'); 
         if (!tetingkapCetak) { alert("Pop-up disekat oleh pelayar web (browser) anda."); return; }
         tetingkapCetak.document.write(htmlContent); 
@@ -1403,6 +1411,26 @@ window.hapusRekodSimpanan = function(e) {
     }
 };
 
+window.kembaliKeKalkulator = function() {
+    // 1. Buang panel jadual Maklumat Gaji yang sedang dipapar
+    let activeMg = document.getElementById('active-maklumatGaji');
+    if (activeMg) activeMg.remove();
+
+    // 2. Munculkan kembali kesemua kalkulator dan pengiraan asal pengguna
+    document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
+        kad.style.display = '';
+        kad.classList.remove('sementara-sembunyi');
+    });
+
+    // 3. Pastikan Rumusan dan Warning Box dipaparkan semula seperti biasa
+    let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+    if (semuaKadAktif.length > 0) {
+        let rumusanCard = document.querySelector('.rumusan-card');
+        if (rumusanCard) rumusanCard.style.display = "block";
+        let warningBox = document.querySelector('.warning-box');
+        if (warningBox) warningBox.style.display = "block";
+    }
+};
 function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) {
     let tbody = document.querySelector('#card-maklumatGaji tbody');
     if (!tbody) return;
@@ -1996,15 +2024,26 @@ window.tambahKalkulator = function(templateId) {
     let rumusanCard = document.querySelector('.rumusan-card');
     let warningBox = document.querySelector('.warning-box');
 
-    if (templateId === 'maklumatGaji') {
+if (templateId === 'maklumatGaji') {
         let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-        semuaKadAktif.forEach(kad => kad.remove());
+        // PENAMBAHBAIKAN: Sembunyikan kad sementara (jangan remove) supaya data terjaga untuk Kemaskini
+        semuaKadAktif.forEach(kad => {
+            kad.classList.add('sementara-sembunyi');
+            kad.style.display = 'none';
+        });
         if (rumusanCard) rumusanCard.style.display = "none";
         if (warningBox) warningBox.style.display = "none";
     } else {
         if (warningBox) warningBox.style.display = "block";
         let existingMg = document.getElementById('active-maklumatGaji');
-        if (existingMg) existingMg.remove();
+        if (existingMg) {
+            existingMg.remove();
+            // PENAMBAHBAIKAN: Jika pengguna buka menu kalkulator lain, tunjukkan semula kalkulator yang disorok
+            document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
+                kad.style.display = '';
+                kad.classList.remove('sementara-sembunyi');
+            });
+        }
     }
 
     let templateCard = document.getElementById('card-' + templateId);
