@@ -1444,14 +1444,29 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let warnaTeks = jenis === 'penyata' ? '#198754' : '#0d6efd'; 
     let warnaBg   = jenis === 'penyata' ? '#d1e7dd' : '#cfe2ff';
 
-    // Padamkan label "Baru" pada rekod-rekod lama supaya hanya yang terkini ada label ini
-    let labelLama = tbody.querySelectorAll('.label-rekod-baru');
-    labelLama.forEach(label => label.remove());
+    let safeNama = namaPekerja || '-';
+    let safeMajikan = majikan || '-';
+
+    // PENAMBAHBAIKAN: Hanya padam label "Baru" pada rekod yang mempunyai 
+    // Jenis, Nama Pekerja, dan Nama Majikan yang SAMA sahaja (Kemaskini).
+    let semuaBaris = tbody.querySelectorAll('tr');
+    semuaBaris.forEach(baris => {
+        if (baris.getAttribute('data-jenis') === jenisTeks && 
+            baris.getAttribute('data-pekerja') === safeNama && 
+            baris.getAttribute('data-majikan') === safeMajikan) {
+            let labelLama = baris.querySelector('.label-rekod-baru');
+            if (labelLama) labelLama.remove();
+        }
+    });
 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
-    // PERUBAHAN: Menambah <div> dengan paparan flex-column supaya tag 'Baru' berada tepat di bawah jenis teks
+    // Simpan data ke dalam <tr> supaya sistem boleh cam rekod yang sama pada masa akan datang
+    tr.setAttribute('data-jenis', jenisTeks);
+    tr.setAttribute('data-pekerja', safeNama);
+    tr.setAttribute('data-majikan', safeMajikan);
+    
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
@@ -1459,8 +1474,8 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
                 <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
             </div>
         </td>
-        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${namaPekerja || '-'}</strong></td>
-        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${majikan || '-'}</strong></td>
+        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeNama}</strong></td>
+        <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeMajikan}</strong></td>
         <td style="padding: 15px; text-align: center; font-size: 13px; color: #444; vertical-align: middle;">${tempoh || '-'}</td>
         <td style="padding: 15px; text-align: center; vertical-align: middle;">
             <button data-id="${unikId}" onclick="bukaRekodSimpanan(event)" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📂 Buka</button>
@@ -1471,7 +1486,6 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let firstRow = tbody.querySelector('tr');
     if (firstRow && firstRow.innerHTML.includes('KBR/10103')) firstRow.remove();
 
-    // Rekod baharu sentiasa di bawah
     tbody.appendChild(tr);
 }
 function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenisCetak, xtra, unikId) {
