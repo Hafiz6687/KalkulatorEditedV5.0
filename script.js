@@ -972,7 +972,7 @@ function tunjukTourMaklumatPerkhidmatan() {
 function paparModalLaporan(jenis) {
     let existingModal = document.getElementById('modalLaporanPenuh'); 
     
-    // PERUBAHAN: Pengekalan Data Modal (Persist)
+// PERUBAHAN: Pengekalan Data Modal (Persist)
     if(existingModal) {
         let isPenyata = existingModal.querySelector('#inputNamaMajikan') !== null;
         if ((jenis === 'penyata' && isPenyata) || (jenis === 'penuh' && !isPenyata)) {
@@ -980,13 +980,16 @@ function paparModalLaporan(jenis) {
             if (jenis === 'penyata') {
                 autoKiraPotonganBerkanun();
                 if (window.autoKiraBakiSvc) window.autoKiraBakiSvc();
+                
+                // 👇 TAMBAH KOD INI DI SINI UNTUK KALI KEDUA DAN SETERUSNYA
+                setTimeout(() => tunjukTourElaunPopup(), 400);
             }
             return;
         } else {
             existingModal.remove(); // Remove jika switch format modal yang berbeza
         }
     }
-
+    
     if (jenis === 'penyata') {
         
         // ==== KUTIP DATA KELAYAKAN PERKHIDMATAN (PRE-FILL) ====
