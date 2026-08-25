@@ -777,8 +777,51 @@ window.autoKiraPotonganBerkanun = function() {
     }
 };
 
-function janaLaporanPenuh() { paparModalLaporan('penuh'); }
+function semakKalkulatorTakLengkap() {
+    let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+    for (let kad of semuaKadAktif) {
+        if(kad.id === 'active-maklumatGaji') continue;
+
+        let isLengkap = false;
+        let dataDivs = kad.querySelectorAll('[id$="Data"], [data-original-id$="Data"]');
+        let pendingGGN = kad.querySelector('[id="ggnResPending"], [data-original-id="ggnResPending"]');
+        
+        if (pendingGGN) {
+            if (window.getComputedStyle(pendingGGN).display === 'none') isLengkap = true;
+        } else if (dataDivs.length > 0) {
+            dataDivs.forEach(div => {
+                if (window.getComputedStyle(div).display !== 'none') isLengkap = true;
+            });
+        } else {
+            isLengkap = true; 
+        }
+
+        if (!isLengkap) {
+            let tajuk = "Kalkulator";
+            let h2 = kad.querySelector('h2');
+            if (h2) tajuk = h2.innerText.replace(/\n/g, ' ').trim();
+            return tajuk;
+        }
+    }
+    return null;
+}
+
+function janaLaporanPenuh() { 
+    let takLengkap = semakKalkulatorTakLengkap();
+    if (takLengkap) {
+        alert("Kalkulator (" + takLengkap + ") tidak lengkap. Sila lengkapkan atau padam kalkulator tersebut.");
+        return;
+    }
+    paparModalLaporan('penuh'); 
+}
+
 function janaPenyataGaji() { 
+    let takLengkap = semakKalkulatorTakLengkap();
+    if (takLengkap) {
+        alert("Kalkulator (" + takLengkap + ") tidak lengkap. Sila lengkapkan atau padam kalkulator tersebut.");
+        return;
+    }
+
     let orpCardLengkap = false;
     let orpCardWujud = null;
     let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template)');
