@@ -1439,13 +1439,18 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let warnaTeks = jenis === 'penyata' ? '#198754' : '#0d6efd'; 
     let warnaBg   = jenis === 'penyata' ? '#d1e7dd' : '#cfe2ff';
 
+    // 1. PENAMBAHBAIKAN: Padamkan label "Baru" pada rekod-rekod lama supaya hanya yang terkini ada label ini
+    let labelLama = tbody.querySelectorAll('.label-rekod-baru');
+    labelLama.forEach(label => label.remove());
+
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
-    // PERHATIKAN: ID kini disorokkan dalam data-id="${unikId}" untuk elak dipotong sistem lama
+    // PERHATIKAN: Tambahan kod HTML untuk remark "Baru" dengan latar belakang kuning
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks};">
             <span style="background: ${warnaBg}; padding: 4px 8px; border-radius: 4px;">${jenisTeks}</span>
+            <span class="label-rekod-baru" style="background: #ffeb3b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px; display: inline-block; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">Baru</span>
         </td>
         <td style="padding: 15px; font-size: 13px;"><strong style="color: #333;">${namaPekerja || '-'}</strong></td>
         <td style="padding: 15px; font-size: 13px;"><strong style="color: #333;">${majikan || '-'}</strong></td>
@@ -1459,7 +1464,9 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let firstRow = tbody.querySelector('tr');
     if (firstRow && firstRow.innerHTML.includes('KBR/10103')) firstRow.remove();
 
-    tbody.prepend(tr);
+    // 2. PENAMBAHBAIKAN: Tukar prepend ke appendChild 
+    // Ini memastikan rekod yang terbaharu akan sentiasa berada di barisan paling BAWAH.
+    tbody.appendChild(tr);
 }
 function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenisCetak, xtra, unikId) {
     const senaraiKalkulator = [
