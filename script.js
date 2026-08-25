@@ -974,7 +974,8 @@ function paparModalLaporan(jenis) {
     
 // PERUBAHAN: Pengekalan Data Modal (Persist)
     if(existingModal) {
-        let isPenyata = existingModal.querySelector('#inputNamaMajikan') !== null;
+        // PENAMBAHBAIKAN: Guna 'inputTempohUpah' untuk bezakan Penyata dan Laporan
+        let isPenyata = existingModal.querySelector('#inputTempohUpah') !== null;
         if ((jenis === 'penyata' && isPenyata) || (jenis === 'penuh' && !isPenyata)) {
             existingModal.style.display = 'flex';
             if (jenis === 'penyata') {
