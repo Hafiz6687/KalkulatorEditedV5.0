@@ -1444,14 +1444,38 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let warnaTeks = jenis === 'penyata' ? '#198754' : '#0d6efd'; 
     let warnaBg   = jenis === 'penyata' ? '#d1e7dd' : '#cfe2ff';
 
-    let safeNama = namaPekerja || '-';
-    let safeMajikan = majikan || '-';
+    // Pastikan tiada ruang kosong (space) yang berlebihan merosakkan semakan
+    let safeNama = (namaPekerja || '-').trim();
+    let safeMajikan = (majikan || '-').trim();
 
+    // PENAMBAHBAIKAN: Semakan pintar menyokong rekod lama dan baru
     let semuaBaris = tbody.querySelectorAll('tr');
     semuaBaris.forEach(baris => {
-        if (baris.getAttribute('data-jenis') === jenisTeks && 
-            baris.getAttribute('data-pekerja') === safeNama && 
-            baris.getAttribute('data-majikan') === safeMajikan) {
+        let isMatch = false;
+        let oldJenis = baris.getAttribute('data-jenis');
+        
+        if (oldJenis) {
+            // Jika rekod dicipta menggunakan kod versi baharu (ada data-attribute)
+            let oldPekerja = baris.getAttribute('data-pekerja');
+            let oldMajikan = baris.getAttribute('data-majikan');
+            if (oldJenis === jenisTeks && oldPekerja === safeNama && oldMajikan === safeMajikan) {
+                isMatch = true;
+            }
+        } else {
+            // Fallback: Jika rekod lama dicipta sebelum ini (tiada data-attribute)
+            let tds = baris.querySelectorAll('td');
+            if (tds.length >= 3) {
+                let textJenis = tds[0].innerText.includes('Penyata Gaji') ? 'Penyata Gaji' : (tds[0].innerText.includes('Laporan') ? 'Laporan' : '');
+                let textPekerja = tds[1].innerText.trim();
+                let textMajikan = tds[2].innerText.trim();
+                if (textJenis === jenisTeks && textPekerja === safeNama && textMajikan === safeMajikan) {
+                    isMatch = true;
+                }
+            }
+        }
+
+        // Padam label BARU pada rekod lama yang dijumpai
+        if (isMatch) {
             let labelLama = baris.querySelector('.label-rekod-baru');
             if (labelLama) labelLama.remove();
         }
@@ -1460,11 +1484,11 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
     
+    // Tanam identiti untuk mudah dikesan kelak
     tr.setAttribute('data-jenis', jenisTeks);
     tr.setAttribute('data-pekerja', safeNama);
     tr.setAttribute('data-majikan', safeMajikan);
     
-    // PERUBAHAN: Teks "Baru" ditukar kepada "BARU" huruf besar
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
