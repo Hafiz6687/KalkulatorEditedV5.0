@@ -1257,10 +1257,7 @@ function paparModalLaporan(jenis) {
         autoKiraPotonganBerkanun();
         setTimeout(() => { if (window.autoKiraBakiSvc) window.autoKiraBakiSvc(); }, 100);
 
-        if (!tourElaunPopupDitunjuk) {
-            tourElaunPopupDitunjuk = true;
-            setTimeout(() => tunjukTourElaunPopup(), 400);
-        }
+        setTimeout(() => tunjukTourElaunPopup(), 400);
         
     } else {
         let modalHtml = `
