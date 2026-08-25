@@ -759,6 +759,22 @@ window.autoKiraPotonganBerkanun = function() {
         if(perkesoNilai && document.activeElement !== perkesoNilai) perkesoNilai.value = (pctPERKESO > 0 && totalGajiElaun > 0) ? formatSafeRM(totalGajiElaun * (pctPERKESO / 100)) : "";
         if(sipNilai && document.activeElement !== sipNilai) sipNilai.value = (pctSIP > 0 && totalGajiElaun > 0) ? formatSafeRM(totalGajiElaun * (pctSIP / 100)) : "";
     }
+
+    // PENAMBAHBAIKAN: Kiraan Tidak Hadir (Absent) menggunakan formula ORP (Jumlah Gaji / 26) * Bil. Hari
+    let absentHariInput = document.getElementById('inputAbsentHari');
+    let absentNilaiInput = document.getElementById('inputAbsentNilai');
+    if(absentHariInput && absentNilaiInput) {
+        let hari = parseFloat(absentHariInput.value) || 0;
+        let ORP = totalGajiElaun / 26;
+        
+        if(document.activeElement !== absentNilaiInput) {
+            if (hari > 0 && ORP > 0) {
+                absentNilaiInput.value = formatSafeRM(ORP * hari);
+            } else if (absentHariInput.value.trim() === "") {
+                absentNilaiInput.value = "";
+            }
+        }
+    }
 };
 
 function janaLaporanPenuh() { paparModalLaporan('penuh'); }
