@@ -1294,22 +1294,22 @@ function paparModalLaporan(jenis) {
                         <p style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 15px; background: #e8f0fe; padding: 8px; border-radius: 4px;">Cuti yang dimasukkan di sini akan ditambah secara automatik ke ruangan 'Guna' di Jadual Maklumat Perkhidmatan.</p>
                         
                         <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 120px; font-size: 13px; font-weight: bold;">Hari Kelepasan (PH)</label>
+                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Hari Kelepasan (PH)</label>
                             <input type="number" id="inputPHSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('PH')">
                             <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
                         </div>
                         <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 120px; font-size: 13px; font-weight: bold;">Cuti Tahunan (AL)</label>
+                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Cuti Tahunan (AL)</label>
                             <input type="number" id="inputALSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('AL')">
                             <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
                         </div>
                         <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 120px; font-size: 13px; font-weight: bold;">Cuti Sakit (MC)</label>
+                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Cuti Sakit (MC)</label>
                             <input type="number" id="inputMCSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('MC')">
                             <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
                         </div>
                         <div style="display: flex; gap: 10px; margin-bottom: 25px; align-items: center;">
-                            <label style="width: 120px; font-size: 13px; font-weight: bold;">Hospitalisasi (WD)</label>
+                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Hospitalisasi (WD)</label>
                             <input type="number" id="inputWDSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('WD')">
                             <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
                         </div>
