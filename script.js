@@ -1293,16 +1293,25 @@ function teruskanJanaLaporan(jenis) {
         };
 
         document.querySelectorAll('#containerElaunModal > div').forEach(row => {
-            let j = row.querySelector('.elaun-jenis').value.trim();
-            let n = row.querySelector('.elaun-nilai').value.trim();
-            if (j || n) senaraiElaun.push({ jenis: j, nilai: n });
+            let jEl = row.querySelector('.elaun-jenis');
+            let nEl = row.querySelector('.elaun-nilai');
+            if (jEl && nEl) {
+                let j = jEl.value.trim();
+                let n = nEl.value.trim();
+                if (j || n) senaraiElaun.push({ jenis: j, nilai: n });
+            }
         });
 
         document.querySelectorAll('#containerPotonganModal > div').forEach(row => {
-            let j = row.querySelector('.potong-jenis').value.trim();
-            let p = row.querySelector('.potong-pct').value.trim();
-            let n = row.querySelector('.potong-nilai').value.trim();
-            if (j || p || n) senaraiPotongan.push({ jenis: j, pct: p, nilai: n });
+            let jEl = row.querySelector('.potong-jenis');
+            let pEl = row.querySelector('.potong-pct');
+            let nEl = row.querySelector('.potong-nilai');
+            if (jEl && pEl && nEl) {
+                let j = jEl.value.trim();
+                let p = pEl.value.trim();
+                let n = nEl.value.trim();
+                if (j || p || n) senaraiPotongan.push({ jenis: j, pct: p, nilai: n });
+            }
         });
     }
 
