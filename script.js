@@ -1033,7 +1033,41 @@ function paparModalLaporan(jenis) {
             }
         });
 
-        let elaunModalHtml = `
+// ==== KUTIP MAKLUMAT ELAUN DARI KALKULATOR UTK POP-UP (PRE-FILL) ====
+        let senaraiElaunPreFill = [];
+        document.querySelectorAll('.calculator-card:not(.hidden-template) .elaun-row-kalkulator').forEach(row => {
+            let jEl = row.querySelector('.global-elaun-jenis');
+            let nEl = row.querySelector('.global-elaun-nilai');
+            if (jEl && nEl) {
+                let j = jEl.value.trim();
+                let n = evaluateSmartMath(nEl.value);
+                if (j || n > 0) senaraiElaunPreFill.push({ jenis: j, nilai: n > 0 ? n : "" });
+            }
+        });
+
+        if (senaraiElaunPreFill.length === 0 && typeof senaraiElaunGlobal !== 'undefined' && senaraiElaunGlobal.length > 0) {
+            senaraiElaunPreFill = senaraiElaunGlobal;
+        }
+
+        let elaunModalHtml = '';
+        if (senaraiElaunPreFill.length > 0) {
+            senaraiElaunPreFill.forEach((elaun, i) => {
+                let nFormatted = elaun.nilai ? formatSafeRM(elaun.nilai) : '';
+                let btnHtml = i === 0 
+                    ? `<button type="button" style="visibility:hidden; width: 30px; flex-shrink: 0; padding:0; border:none;"></button>`
+                    : `<button type="button" onclick="this.parentElement.parentElement.remove(); autoKiraPotonganBerkanun();" style="width: 30px; flex-shrink: 0; background:#dc3545; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">X</button>`;
+                
+                elaunModalHtml += `
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 3;"><input type="text" class="elaun-jenis" placeholder="Jenis Elaun" value="${elaun.jenis || ''}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; box-sizing: border-box;" oninput="this.value = formatTitleCase(this.value)"></div>
+                    <div style="flex: 2; display: flex; gap: 5px;">
+                        <input type="text" class="elaun-nilai number-input salary-input" placeholder="Nilai (RM)" value="${nFormatted}" style="width: 100%; flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: right; box-sizing: border-box;" oninput="autoKiraPotonganBerkanun()">
+                        ${btnHtml}
+                    </div>
+                </div>`;
+            });
+        } else {
+            elaunModalHtml = `
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <div style="flex: 3;"><input type="text" class="elaun-jenis" placeholder="Jenis Elaun" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; box-sizing: border-box;" oninput="this.value = formatTitleCase(this.value)"></div>
                 <div style="flex: 2; display: flex; gap: 5px;">
@@ -1041,6 +1075,7 @@ function paparModalLaporan(jenis) {
                     <button type="button" style="visibility:hidden; width: 30px; flex-shrink: 0; padding:0; border:none;"></button>
                 </div>
             </div>`;
+        }
 
         let potonganModalHtml = '';
         if (totalKelewatan > 0) {
