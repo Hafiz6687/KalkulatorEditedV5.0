@@ -2154,211 +2154,213 @@ window.resetKalkulatorIndividu = function(e) {
 // 7. ENGINE 2026: CLONE & MULTI-INSTANCE
 // =====================================================
 window.tambahKalkulator = function(templateId) {
-    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-    let activeBtn = document.querySelector(`.menu-btn[onclick*="${templateId}"]`);
-    if(activeBtn) activeBtn.classList.add('active');
+    try {
+        document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+        let activeBtn = document.querySelector(`.menu-btn[onclick*="${templateId}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
 
-    let grid = document.getElementById('active-calculators-grid');
-    let rumusanCard = document.querySelector('.rumusan-card');
-    let warningBox = document.querySelector('.warning-box');
+        let grid = document.getElementById('active-calculators-grid');
+        let rumusanCard = document.querySelector('.rumusan-card');
+        let warningBox = document.querySelector('.warning-box');
 
-    if (templateId === 'maklumatGaji') {
-        // 1. Padamkan kad Maklumat Gaji sedia ada (jika ada) untuk elak duplikasi
-        let existingMg = document.querySelectorAll('#active-maklumatGaji');
-        existingMg.forEach(mg => mg.remove());
+        if (templateId === 'maklumatGaji') {
+            let existingMg = document.querySelectorAll('#active-maklumatGaji');
+            existingMg.forEach(mg => mg.remove());
 
-        // 2. Sembunyikan kad aktif sementara
-        let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-        semuaKadAktif.forEach(kad => {
-            kad.classList.add('sementara-sembunyi');
-            kad.style.display = 'none';
-        });
-        if (rumusanCard) rumusanCard.style.display = "none";
-        if (warningBox) warningBox.style.display = "none";
-    } else {
-        if (warningBox) warningBox.style.display = "block";
-        let existingMg = document.getElementById('active-maklumatGaji');
-        if (existingMg) {
-            existingMg.remove();
-            
-            // PENAMBAHBAIKAN UTAMA: Jika pilih kalkulator baharu semasa di paparan Maklumat Gaji,
-            // anggap sebagai MULA PROSES BARU. Padam semua kad yang disorok, reset rumusan & elaun.
-            document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
-                kad.remove();
+            let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+            semuaKadAktif.forEach(kad => {
+                kad.classList.add('sementara-sembunyi');
+                kad.style.display = 'none';
             });
-            
-            if (typeof resetRumusan === 'function') resetRumusan();
-            if (typeof senaraiElaunGlobal !== 'undefined') senaraiElaunGlobal = [];
             if (rumusanCard) rumusanCard.style.display = "none";
-            setTimeout(() => { if (typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
-        }
-    }
-
-    let templateCard = document.getElementById('card-' + templateId);
-    if (!templateCard) return alert('Kalkulator tidak ditemui!');
-    
-    let clone = templateCard.cloneNode(true);
-    clone.classList.remove('hidden-template');
-    
-    let uniqueSuffix = '_' + Math.random().toString(36).substr(2, 9);
-    
-    if (templateId === 'maklumatGaji') {
-        clone.id = 'active-maklumatGaji';
-        clone.style.position = "relative";
-    } else {
-        clone.id = clone.id + uniqueSuffix;
-        clone.style.position = "relative";
-        let closeBtn = document.createElement('button');
-        closeBtn.className = "close-card-btn";
-        closeBtn.innerHTML = "X";
-        closeBtn.onclick = function() { 
-            let templateId = clone.getAttribute('data-template-id');
-            clone.remove(); 
-            
-            let badanRumusan = document.getElementById('badanJadualRumusan');
-            if (badanRumusan && templateId) {
-                let mappingSasaran = {
-                    'orp': 'orpBakiAmount',
-                    'baki': 'orpBakiAmount',
-                    'otBiasa': 'otAmount',
-                    'rehatKurang': 'rhAmount',
-                    'rehatLebih': 'rhMoreAmount',
-                    'sec18A': 'amount18A',
-                    'otRehat': 'otRHAmount',
-                    'kelepasan': 'phAmount',
-                    'otKelepasan': 'otPHAmount',
-                    'cutiTahunan': 'annualLeaveAmount',
-                    'cutiSakit': 'sickLeaveAmount',
-                    'notis': ['resUniMonthAmount', 'resUni18AAmount'],
-                    'faedah': 'tbbAmount',
-                    'lewat': 'lewatAmount'
-                };
-
-                let sasaranId = mappingSasaran[templateId];
-                if (sasaranId) {
-                    let barisRumusan = badanRumusan.querySelectorAll('tr');
-                    barisRumusan.forEach(tr => {
-                        let select = tr.querySelector('select');
-                        if (select) {
-                            let nilaiSelect = select.value;
-                            if (Array.isArray(sasaranId) ? sasaranId.includes(nilaiSelect) : nilaiSelect === sasaranId) {
-                                tr.remove(); 
-                            }
-                        }
-                    });
-                    if (typeof kiraJumlahKeseluruhanRumusan === 'function') {
-                        kiraJumlahKeseluruhanRumusan(); 
-                    }
-                }
+            if (warningBox) warningBox.style.display = "none";
+        } else {
+            if (warningBox) warningBox.style.display = "block";
+            let existingMg = document.getElementById('active-maklumatGaji');
+            if (existingMg) {
+                existingMg.remove();
+                
+                document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
+                    kad.remove();
+                });
+                
+                if (typeof resetRumusan === 'function') resetRumusan();
+                if (typeof senaraiElaunGlobal !== 'undefined') senaraiElaunGlobal = [];
+                if (rumusanCard) rumusanCard.style.display = "none";
+                setTimeout(() => { if (typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
             }
-
-            let kadTinggal = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-            if (kadTinggal.length === 0) {
-                if (rumusanCard) { rumusanCard.style.display = "none"; }
-            } else {
-                setTimeout(() => window.semakDanTukarElaun(), 50);
-            }
-        };
-        clone.appendChild(closeBtn);
-    }
-
-    let allElementsWithId = clone.querySelectorAll('[id]');
-    allElementsWithId.forEach(el => {
-        el.setAttribute('data-original-id', el.id);
-        if (templateId !== 'maklumatGaji') {
-            el.id = el.id + uniqueSuffix;
         }
-        if(el.tagName === 'INPUT' && el.type !== 'button') el.value = "";
-        if(el.tagName === 'STRONG' || el.tagName === 'SPAN') {
-            if(el.innerText.includes('RM')) el.innerText = 'RM 0.00';
-            else if(el.innerText !== 'Kadar Sehari' && el.innerText !== 'Bayaran' && el.innerText !== 'Hari Bekerja') el.innerText = '-';
-        }
-    });
-    
-    if (templateId !== 'maklumatGaji') {
-        let allElementsWithName = clone.querySelectorAll('[name]');
-        allElementsWithName.forEach(el => {
-            el.setAttribute('name', el.getAttribute('name') + uniqueSuffix);
-        });
-    }
 
-    if (templateId !== 'maklumatGaji') {
-        let currentBasic = "";
-        let currentAllowance = "";
+        let templateCard = document.getElementById('card-' + templateId);
+        if (!templateCard) return alert('Kalkulator tidak ditemui!');
         
-        function extractSalaryFromCard(kad) {
-            for (let mapKey of Object.keys(salaryMap)) {
-                let sourceBasic = kad.querySelector(`[data-original-id="${mapKey}"]`);
-                if (sourceBasic && sourceBasic.value) {
-                    let semakNilai = evaluateSmartMath(sourceBasic.value);
-                    if (semakNilai > 0) {
-                        let allowVal = "";
-                        let sourceAllowId = salaryMap[mapKey][0];
-                        let sourceAllow = kad.querySelector(`[data-original-id="${sourceAllowId}"]`);
-                        if (sourceAllow) allowVal = sourceAllow.value;
-                        return { basic: sourceBasic.value, allow: allowVal };
+        let clone = templateCard.cloneNode(true);
+        clone.classList.remove('hidden-template');
+        clone.style.display = 'block'; // Jaminan supaya kalkulator pasti muncul di skrin
+        
+        let uniqueSuffix = '_' + Math.random().toString(36).substr(2, 9);
+        
+        if (templateId === 'maklumatGaji') {
+            clone.id = 'active-maklumatGaji';
+            clone.style.position = "relative";
+        } else {
+            clone.id = clone.id + uniqueSuffix;
+            clone.style.position = "relative";
+            let closeBtn = document.createElement('button');
+            closeBtn.className = "close-card-btn";
+            closeBtn.innerHTML = "X";
+            closeBtn.onclick = function() { 
+                let tempId = clone.getAttribute('data-template-id');
+                clone.remove(); 
+                
+                let badanRumusan = document.getElementById('badanJadualRumusan');
+                if (badanRumusan && tempId) {
+                    let mappingSasaran = {
+                        'orp': 'orpBakiAmount',
+                        'baki': 'orpBakiAmount',
+                        'otBiasa': 'otAmount',
+                        'rehatKurang': 'rhAmount',
+                        'rehatLebih': 'rhMoreAmount',
+                        'sec18A': 'amount18A',
+                        'otRehat': 'otRHAmount',
+                        'kelepasan': 'phAmount',
+                        'otKelepasan': 'otPHAmount',
+                        'cutiTahunan': 'annualLeaveAmount',
+                        'cutiSakit': 'sickLeaveAmount',
+                        'notis': ['resUniMonthAmount', 'resUni18AAmount'],
+                        'faedah': 'tbbAmount',
+                        'lewat': 'lewatAmount'
+                    };
+
+                    let sasaranId = mappingSasaran[tempId];
+                    if (sasaranId) {
+                        let barisRumusan = badanRumusan.querySelectorAll('tr');
+                        barisRumusan.forEach(tr => {
+                            let select = tr.querySelector('select');
+                            if (select) {
+                                let nilaiSelect = select.value;
+                                if (Array.isArray(sasaranId) ? sasaranId.includes(nilaiSelect) : nilaiSelect === sasaranId) {
+                                    tr.remove(); 
+                                }
+                            }
+                        });
+                        if (typeof kiraJumlahKeseluruhanRumusan === 'function') {
+                            kiraJumlahKeseluruhanRumusan(); 
+                        }
                     }
                 }
-            }
-            return null;
-        }
 
-        if (activeCardContext && !activeCardContext.classList.contains('hidden-template') && !activeCardContext.classList.contains('rumusan-card')) {
-            let extracted = extractSalaryFromCard(activeCardContext);
-            if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; }
-        }
-
-        if (currentBasic === "") {
-            let kadAktifLain = Array.from(document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)'));
-            for (let i = kadAktifLain.length - 1; i >= 0; i--) {
-                let extracted = extractSalaryFromCard(kadAktifLain[i]);
-                if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; break; }
-            }
-        }
-
-        if (currentBasic !== "") {
-            for (let targetKey of Object.keys(salaryMap)) {
-                let targetBasic = clone.querySelector(`[data-original-id="${targetKey}"]`);
-                let targetAllowId = salaryMap[targetKey][0];
-                let targetAllow = clone.querySelector(`[data-original-id="${targetAllowId}"]`);
-                let targetTotalId = salaryMap[targetKey][1];
-                let targetTotal = clone.querySelector(`[data-original-id="${targetTotalId}"]`);
-
-                if (targetBasic) {
-                    targetBasic.value = currentBasic;
-                    if (targetAllow && currentAllowance !== "") { targetAllow.value = currentAllowance; }
-                    if (targetTotal) {
-                        let calcBasic = evaluateSmartMath(currentBasic);
-                        let calcAllow = currentAllowance !== "" ? evaluateSmartMath(currentAllowance) : 0;
-                        targetTotal.value = "RM " + (calcBasic + calcAllow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    }
+                let kadTinggal = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+                if (kadTinggal.length === 0) {
+                    if (rumusanCard) { rumusanCard.style.display = "none"; }
+                } else {
+                    setTimeout(() => window.semakDanTukarElaun(), 50);
                 }
-            }
+            };
+            clone.appendChild(closeBtn);
         }
-    }
 
-    let allButtons = clone.querySelectorAll('button');
-    allButtons.forEach(btn => {
-        let oriClick = btn.getAttribute('onclick');
-        if (oriClick && !oriClick.includes('clone.remove')) {
-            let funcName = oriClick.replace(/\(.*?\)/, '').trim(); 
-            btn.removeAttribute('onclick');
-            btn.setAttribute('data-action-func', oriClick);
-            btn.addEventListener('click', function(e) {
-                activeCardContext = clone; 
-                try { if (typeof window[funcName] === 'function') window[funcName](e); } finally { activeCardContext = null; }
+        let allElementsWithId = clone.querySelectorAll('[id]');
+        allElementsWithId.forEach(el => {
+            el.setAttribute('data-original-id', el.id);
+            if (templateId !== 'maklumatGaji') {
+                el.id = el.id + uniqueSuffix;
+            }
+            if(el.tagName === 'INPUT' && el.type !== 'button') el.value = "";
+            if(el.tagName === 'STRONG' || el.tagName === 'SPAN') {
+                if(el.innerText.includes('RM')) el.innerText = 'RM 0.00';
+                else if(el.innerText !== 'Kadar Sehari' && el.innerText !== 'Bayaran' && el.innerText !== 'Hari Bekerja') el.innerText = '-';
+            }
+        });
+        
+        if (templateId !== 'maklumatGaji') {
+            let allElementsWithName = clone.querySelectorAll('[name]');
+            allElementsWithName.forEach(el => {
+                el.setAttribute('name', el.getAttribute('name') + uniqueSuffix);
             });
         }
-    });
 
-    if (rumusanCard) grid.insertBefore(clone, rumusanCard); else grid.appendChild(clone);
-    
-    if (templateId !== 'maklumatGaji' && rumusanCard) { 
-        let kadAktifBiasa = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
-        if (kadAktifBiasa.length > 0) rumusanCard.style.display = "block"; 
+        if (templateId !== 'maklumatGaji') {
+            let currentBasic = "";
+            let currentAllowance = "";
+            
+            function extractSalaryFromCard(kad) {
+                for (let mapKey of Object.keys(salaryMap)) {
+                    let sourceBasic = kad.querySelector(`[data-original-id="${mapKey}"]`);
+                    if (sourceBasic && sourceBasic.value) {
+                        let semakNilai = evaluateSmartMath(sourceBasic.value);
+                        if (semakNilai > 0) {
+                            let allowVal = "";
+                            let sourceAllowId = salaryMap[mapKey][0];
+                            let sourceAllow = kad.querySelector(`[data-original-id="${sourceAllowId}"]`);
+                            if (sourceAllow) allowVal = sourceAllow.value;
+                            return { basic: sourceBasic.value, allow: allowVal };
+                        }
+                    }
+                }
+                return null;
+            }
+
+            if (activeCardContext && activeCardContext.classList && !activeCardContext.classList.contains('hidden-template') && !activeCardContext.classList.contains('rumusan-card')) {
+                let extracted = extractSalaryFromCard(activeCardContext);
+                if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; }
+            }
+
+            if (currentBasic === "") {
+                let kadAktifLain = Array.from(document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)'));
+                for (let i = kadAktifLain.length - 1; i >= 0; i--) {
+                    let extracted = extractSalaryFromCard(kadAktifLain[i]);
+                    if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; break; }
+                }
+            }
+
+            if (currentBasic !== "") {
+                for (let targetKey of Object.keys(salaryMap)) {
+                    let targetBasic = clone.querySelector(`[data-original-id="${targetKey}"]`);
+                    let targetAllowId = salaryMap[targetKey][0];
+                    let targetAllow = clone.querySelector(`[data-original-id="${targetAllowId}"]`);
+                    let targetTotalId = salaryMap[targetKey][1];
+                    let targetTotal = clone.querySelector(`[data-original-id="${targetTotalId}"]`);
+
+                    if (targetBasic) {
+                        targetBasic.value = currentBasic;
+                        if (targetAllow && currentAllowance !== "") { targetAllow.value = currentAllowance; }
+                        if (targetTotal) {
+                            let calcBasic = evaluateSmartMath(currentBasic);
+                            let calcAllow = currentAllowance !== "" ? evaluateSmartMath(currentAllowance) : 0;
+                            targetTotal.value = "RM " + (calcBasic + calcAllow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        }
+                    }
+                }
+            }
+        }
+
+        let allButtons = clone.querySelectorAll('button');
+        allButtons.forEach(btn => {
+            let oriClick = btn.getAttribute('onclick');
+            if (oriClick && !oriClick.includes('clone.remove')) {
+                let funcName = oriClick.replace(/\(.*?\)/, '').trim(); 
+                btn.removeAttribute('onclick');
+                btn.setAttribute('data-action-func', oriClick);
+                btn.addEventListener('click', function(e) {
+                    activeCardContext = clone; 
+                    try { if (typeof window[funcName] === 'function') window[funcName](e); } finally { activeCardContext = null; }
+                });
+            }
+        });
+
+        if (rumusanCard) grid.insertBefore(clone, rumusanCard); else grid.appendChild(clone);
+        
+        if (templateId !== 'maklumatGaji' && rumusanCard) { 
+            let kadAktifBiasa = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
+            if (kadAktifBiasa.length > 0) rumusanCard.style.display = "block"; 
+        }
+
+        setTimeout(() => clone.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+        
+    } catch (error) {
+        console.error("Ralat dalam tambahKalkulator:", error);
     }
-
-    clone.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 // =====================================================
@@ -2588,7 +2590,6 @@ function fungsiBaruRumusan(e) {
 // 9. MENU FLYOUT SEKSYEN 18A & ENJIN DINAMIK (ISOLATED)
 // =====================================================
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Cari butang "Maklumat Gaji" di menu sisi untuk dijadikan rujukan posisi
     let menuBtns = document.querySelectorAll('.menu-btn');
     let maklumatGajiBtn = null;
     
@@ -2599,12 +2600,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     if (maklumatGajiBtn) {
-        // 2. Wujudkan Kontena untuk butang baru supaya kedudukan flyout kemas
         let container = document.createElement('div');
         container.style.position = 'relative';
         container.style.marginTop = '5px'; 
         
-        // 3. Wujudkan Butang "Seksyen 18A"
         let btn18A = document.createElement('button');
         btn18A.className = maklumatGajiBtn.className;
         btn18A.innerHTML = "⚖️ Seksyen 18A";
@@ -2615,15 +2614,13 @@ document.addEventListener("DOMContentLoaded", function() {
             if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
         };
 
-// 4. Wujudkan Flyout Menu
         let flyout = document.createElement('div');
         flyout.id = "flyoutMenu18ACustom";
-        // PENAMBAHBAIKAN: Ubah ke bottom: 100% supaya menu terbuka (pop-up) ke ATAS dan tidak terpotong di bawah skrin
+        // DIKEMASKINI: bottom: 100% supaya ia terapung ke atas dan tidak tersorok di bawah skrin
         flyout.style.cssText = "display: none; position: absolute; bottom: 100%; left: 0; width: 100%; margin-bottom: 10px; background: #fff; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-radius: 8px; z-index: 99999; border: 2px solid #1f4e79; max-height: 65vh; overflow-y: auto; text-align: left;";
         
         let htmlLinks = '<div style="background:#d9534f; color:white; padding:12px; font-weight:bold; font-size:13px; position:sticky; top:0; z-index:10; border-radius: 8px 8px 0 0;">PILIH KALKULATOR (MOD 18A):</div><div style="padding: 10px;">';
         
-        // Hanya masukkan senarai kalkulator yang asalnya menggunakan formula bahagi 26
         const validTemplates = ['orp', 'otBiasa', 'otRehat', 'otKelepasan', 'rehatKurang', 'rehatLebih', 'kelepasan', 'cutiTahunan', 'cutiSakit', 'lewat'];
         
         menuBtns.forEach(b => {
@@ -2633,7 +2630,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (match && validTemplates.includes(match[1])) {
                     let templateId = match[1];
                     let text = b.innerText.trim();
-                    // Link ini akan memanggil enjin khas 'tambahKalkulator18ACustom'
                     htmlLinks += `<a href="#" onclick="tambahKalkulator18ACustom('${templateId}'); document.getElementById('flyoutMenu18ACustom').style.display='none'; return false;" style="display: block; padding: 10px 12px; color: #333; text-decoration: none; border-bottom: 1px dashed #eee; font-size: 12px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='#ffe8e8'; this.style.color='#d9534f'; this.style.paddingLeft='15px';" onmouseout="this.style.background='transparent'; this.style.color='#333'; this.style.paddingLeft='12px';">${text}</a>`;
                 }
             }
@@ -2645,7 +2641,6 @@ document.addEventListener("DOMContentLoaded", function() {
         container.appendChild(flyout);
         maklumatGajiBtn.parentNode.insertBefore(container, maklumatGajiBtn.nextSibling);
 
-        // Auto-tutup flyout apabila klik di tempat lain
         document.addEventListener('click', function(e) {
             if (!container.contains(e.target)) {
                 flyout.style.display = 'none';
@@ -2654,26 +2649,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// 5. Enjin Khas Mengklon Kalkulator dan Menukar Formula ke Mod Bulan Semasa
 window.tambahKalkulator18ACustom = function(templateId) {
-    // Panggil enjin asal untuk buat klon standard (supaya UI 100% sama)
     window.tambahKalkulator(templateId);
     
     setTimeout(() => {
-        // Tangkap kalkulator yang baru sahaja diklon
         let semuaKad = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
         let newCard = semuaKad[semuaKad.length - 1]; 
         
         if (!newCard) return;
 
-        // Berikan identiti visual warna merah untuk membezakannya dengan kalkulator biasa
         newCard.style.borderTop = "5px solid #d9534f";
         let h2 = newCard.querySelector('h2');
         if(h2) {
             h2.innerHTML = h2.innerHTML + ` <br><span style="font-size:12px; color:#d9534f; background:#ffe8e8; padding:3px 8px; border-radius:4px;">Mod Seksyen 18A (Bahagi Hari Dalam Bulan)</span>`;
         }
 
-        // Suntik input baharu untuk pengguna masukkan jumlah hari bagi bulan tersebut
         let formGroups = newCard.querySelectorAll('.form-group');
         if (formGroups.length > 0) {
             let divHari = document.createElement('div');
@@ -2682,7 +2672,6 @@ window.tambahKalkulator18ACustom = function(templateId) {
             formGroups[0].parentNode.insertBefore(divHari, formGroups[0]);
         }
 
-        // Rampas butang 'Kira' asal dan gantikan dengan enjin formula baharu
         let btnKira = newCard.querySelector('button[data-action-func*="calculate"], button[onclick*="calculate"]');
         if (btnKira) {
             let newBtnKira = btnKira.cloneNode(true);
@@ -2693,14 +2682,13 @@ window.tambahKalkulator18ACustom = function(templateId) {
             newBtnKira.innerHTML = "Kira (Mod 18A)";
             btnKira.parentNode.replaceChild(newBtnKira, btnKira);
 
-            // LOGIK MATEMATIK MOD 18A (Formula Bahagi Hari Semasa ganti 26)
             newBtnKira.addEventListener('click', function(e) {
                 let tempContext = activeCardContext;
                 activeCardContext = newCard;
                 
                 try {
                     let hariBulanInput = newCard.querySelector('.hari-bulan-18a');
-                    let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : 26; // Jika kosong, set default 26
+                    let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : 26; 
                     let totalSalary = 0, ORP = 0, amount = 0, hourly = 0, daily = 0;
 
                     if (templateId === 'orp') {
