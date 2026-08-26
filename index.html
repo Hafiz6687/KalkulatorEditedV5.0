@@ -38,18 +38,12 @@
 <!-- SIDEBAR 2026 (KEBABOOOM EFFECT) -->
   <aside class="sidebar-2026">
     
-    <div class="sidebar-brand" style="padding-bottom: 5px;">
+    <div class="sidebar-brand" style="padding-bottom: 15px; border-bottom: 1px solid #eeeeee;">
       <img src="logo-aktakerja.png" alt="Logo Kalkulator Akta Kerja" style="width: 200px; height: auto; margin-bottom: 10px; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
-      <!-- Teks PILIHAN KALKULATOR telah dipadam mengikut arahan -->
     </div>
 
-<!-- KAWASAN SCROLL BERMULA DI SINI -->
-    <div class="sidebar-menu" style="padding-top: 15px;">
-      <!-- Semua butang kalkulator asal telah dipadam untuk mengemaskan sidebar -->
-    </div> <!-- PENUTUP .sidebar-menu -->
-
-<!-- KAWASAN BUTANG 'DITANAM' (Kekal di bawah) -->
-    <div style="position: sticky; bottom: 0; background: #ffffff; padding: 15px 20px; border-top: 1px solid #eeeeee; z-index: 10; margin-top: auto;">
+    <!-- KAWASAN BUTANG (Kini dipindahkan terus ke bawah logo) -->
+    <div style="padding: 20px 20px; width: 100%; box-sizing: border-box;">
       
       <!-- Butang 1: Jana Laporan Penuh -->
       <button class="menu-btn" onclick="janaLaporanPenuh()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
@@ -70,7 +64,7 @@
       </button>
 
       <!-- ============================================== -->
-      <!-- TAMBAHAN BARU: BUTANG AKTA KERJA (BAHAGIAN XII & XIIA) -->
+      <!-- BUTANG AKTA KERJA (BAHAGIAN XII & XIIA) -->
       <!-- ============================================== -->
       <div style="position: relative; width: 100%; margin-top: 10px;">
         <button class="menu-btn" onclick="toggleFlyoutAktaKerja(event)" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #e8f0fe 0%, #ffffff 50%, #e8f0fe 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; transform: translateY(-2px); transition: transform 0.2s ease;">
@@ -82,7 +76,7 @@
         </button>
 
         <!-- Menu Flyout Akta Kerja -->
-        <div id="flyoutMenuAktaKerja" style="display: none; position: absolute; left: 105%; bottom: 0; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-radius: 8px; width: 280px; z-index: 999999; border: 2px solid #1f4e79; max-height: 70vh; overflow-y: auto; text-align: left;">
+        <div id="flyoutMenuAktaKerja" style="display: none; position: absolute; left: 105%; top: 0; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-radius: 8px; width: 280px; z-index: 999999; border: 2px solid #1f4e79; max-height: 70vh; overflow-y: auto; text-align: left;">
             <div style="background:#1f4e79; color:white; padding:12px; font-weight:bold; font-size:13px; position:sticky; top:0; z-index:10; border-radius: 6px 6px 0 0;">PILIH KALKULATOR (XII & XIIA):</div>
             <div style="padding: 10px;">
                 <a href="#" onclick="document.getElementById('flyoutMenuAktaKerja').style.display='none'; tambahKalkulator('orp'); return false;" style="display: block; padding: 10px 12px; color: #333; text-decoration: none; border-bottom: 1px dashed #eee; font-size: 12px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='#e8f0fe'; this.style.color='#1f4e79'; this.style.paddingLeft='15px';" onmouseout="this.style.background='transparent'; this.style.color='#333'; this.style.paddingLeft='12px';">📊 KADAR UPAH BIASA (ORP)</a>
@@ -100,10 +94,9 @@
             </div>
         </div>
       </div>
-      <!-- ============================================== -->
 
       <!-- ============================================== -->
-      <!-- TAMBAHAN BARU: BUTANG SEKSYEN 18A & FLYOUT MENU -->
+      <!-- BUTANG SEKSYEN 18A & FLYOUT MENU -->
       <!-- ============================================== -->
       <div style="position: relative; width: 100%; margin-top: 10px;">
         <button class="menu-btn" onclick="toggleFlyout18A(event)" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #ffe8e8 0%, #ffffff 50%, #ffe8e8 100%); color: #d9534f; border-radius: 8px; box-shadow: 0 4px 10px rgba(217, 83, 79, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #d9534f; transform: translateY(-2px); transition: transform 0.2s ease;">
@@ -112,7 +105,7 @@
         </button>
 
         <!-- Menu Flyout 18A -->
-        <div id="flyoutMenu18ACustom" style="display: none; position: absolute; left: 105%; bottom: 0; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-radius: 8px; width: 280px; z-index: 999999; border: 2px solid #d9534f; max-height: 70vh; overflow-y: auto; text-align: left;">
+        <div id="flyoutMenu18ACustom" style="display: none; position: absolute; left: 105%; top: 0; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-radius: 8px; width: 280px; z-index: 999999; border: 2px solid #d9534f; max-height: 70vh; overflow-y: auto; text-align: left;">
             <div style="background:#d9534f; color:white; padding:12px; font-weight:bold; font-size:13px; position:sticky; top:0; z-index:10; border-radius: 6px 6px 0 0;">PILIH KALKULATOR (MOD 18A):</div>
             <div style="padding: 10px;">
                 <a href="#" onclick="tambahKalkulator18ACustom('orp'); return false;" style="display: block; padding: 10px 12px; color: #333; text-decoration: none; border-bottom: 1px dashed #eee; font-size: 12px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='#ffe8e8'; this.style.color='#d9534f'; this.style.paddingLeft='15px';" onmouseout="this.style.background='transparent'; this.style.color='#333'; this.style.paddingLeft='12px';">⚖️ KADAR UPAH BIASA (ORP)</a>
@@ -128,7 +121,6 @@
             </div>
         </div>
       </div>
-      <!-- ============================================== -->
 
     </div>
   </aside>
