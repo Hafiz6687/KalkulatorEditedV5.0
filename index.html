@@ -66,6 +66,16 @@
           box-shadow: 0 6px 15px rgba(217, 83, 79, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.9) !important;
           background: linear-gradient(to right, #ffcaca 0%, #ffffff 50%, #ffcaca 100%) !important;
         }
+
+        /* TAMBAHAN BAHARU UNTUK 3 BUTANG DI BAWAH */
+        .btn-hover-standard {
+          transition: all 0.3s ease !important;
+        }
+        .btn-hover-standard:hover {
+          transform: translateY(-4px) scale(1.02) !important;
+          box-shadow: 0 6px 15px rgba(31, 78, 121, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.9) !important;
+          background: linear-gradient(to right, #d1e2ff 0%, #ffffff 50%, #d1e2ff 100%) !important;
+        }
       </style>
       
       <!-- ============================================== -->
@@ -131,19 +141,19 @@
       </div>
 
       <!-- 3. SENARAI REKOD -->
-      <button class="menu-btn" onclick="tambahKalkulator('maklumatGaji')" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+      <button class="menu-btn btn-hover-standard" onclick="tambahKalkulator('maklumatGaji')" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px);">
         <span class="icon" style="font-size: 16px;">💳</span> 
         <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Senarai Rekod</span>
       </button>
 
       <!-- 4. JANA LAPORAN PENUH -->
-      <button class="menu-btn" onclick="janaLaporanPenuh()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+      <button class="menu-btn btn-hover-standard" onclick="janaLaporanPenuh()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px);">
         <span class="icon" style="font-size: 16px;">📄</span> 
         <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Laporan Penuh</span>
       </button>
 
       <!-- 5. JANA PENYATA GAJI -->
-      <button class="menu-btn" onclick="janaPenyataGaji()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+      <button class="menu-btn btn-hover-standard" onclick="janaPenyataGaji()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px);">
         <span class="icon" style="font-size: 16px;">💵</span> 
         <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Penyata Gaji</span>
       </button>
