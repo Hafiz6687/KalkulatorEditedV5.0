@@ -2615,11 +2615,11 @@ document.addEventListener("DOMContentLoaded", function() {
             if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
         };
 
-        // 4. Wujudkan Flyout Menu
+// 4. Wujudkan Flyout Menu
         let flyout = document.createElement('div');
         flyout.id = "flyoutMenu18ACustom";
-        // Letak di sebelah kanan butang
-        flyout.style.cssText = "display: none; position: absolute; left: 105%; top: 0; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 8px; width: 280px; z-index: 99999; border: 1px solid #ddd; max-height: 80vh; overflow-y: auto; text-align: left;";
+        // PENAMBAHBAIKAN: Ubah ke bottom: 100% supaya menu terbuka (pop-up) ke ATAS dan tidak terpotong di bawah skrin
+        flyout.style.cssText = "display: none; position: absolute; bottom: 100%; left: 0; width: 100%; margin-bottom: 10px; background: #fff; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-radius: 8px; z-index: 99999; border: 2px solid #1f4e79; max-height: 65vh; overflow-y: auto; text-align: left;";
         
         let htmlLinks = '<div style="background:#d9534f; color:white; padding:12px; font-weight:bold; font-size:13px; position:sticky; top:0; z-index:10; border-radius: 8px 8px 0 0;">PILIH KALKULATOR (MOD 18A):</div><div style="padding: 10px;">';
         
