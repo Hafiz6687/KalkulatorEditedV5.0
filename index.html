@@ -42,31 +42,13 @@
       <img src="logo-aktakerja.png" alt="Logo Kalkulator Akta Kerja" style="width: 200px; height: auto; margin-bottom: 10px; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
     </div>
 
-    <!-- KAWASAN BUTANG (Kini dipindahkan terus ke bawah logo) -->
+    <!-- KAWASAN BUTANG (Susunan Baharu) -->
     <div style="padding: 20px 20px; width: 100%; box-sizing: border-box;">
       
-      <!-- Butang 1: Jana Laporan Penuh -->
-      <button class="menu-btn" onclick="janaLaporanPenuh()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
-        <span class="icon" style="font-size: 16px;">📄</span> 
-        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Laporan Penuh</span>
-      </button>
-
-      <!-- Butang 2: Jana Penyata Gaji -->
-      <button class="menu-btn" onclick="janaPenyataGaji()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
-        <span class="icon" style="font-size: 16px;">💵</span> 
-        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Penyata Gaji</span>
-      </button>
-
-      <!-- Butang 3: Maklumat Gaji -->
-      <button class="menu-btn" onclick="tambahKalkulator('maklumatGaji')" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; transform: translateY(-2px); transition: transform 0.2s ease;">
-        <span class="icon" style="font-size: 16px;">💳</span> 
-        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Maklumat Gaji</span>
-      </button>
-
       <!-- ============================================== -->
-      <!-- BUTANG AKTA KERJA (BAHAGIAN XII & XIIA) -->
+      <!-- 1. BUTANG AKTA KERJA (BAHAGIAN XII & XIIA) -->
       <!-- ============================================== -->
-      <div style="position: relative; width: 100%; margin-top: 10px;">
+      <div style="position: relative; width: 100%; margin-bottom: 10px;">
         <button class="menu-btn" onclick="toggleFlyoutAktaKerja(event)" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #e8f0fe 0%, #ffffff 50%, #e8f0fe 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; transform: translateY(-2px); transition: transform 0.2s ease;">
           <span class="icon" style="font-size: 16px;">⚖️</span> 
           <div style="line-height: 1.2; text-align: left; display: inline-block; vertical-align: middle; width: calc(100% - 35px);">
@@ -96,12 +78,15 @@
       </div>
 
       <!-- ============================================== -->
-      <!-- BUTANG SEKSYEN 18A & FLYOUT MENU -->
+      <!-- 2. BUTANG SEKSYEN 18A & FLYOUT MENU -->
       <!-- ============================================== -->
-      <div style="position: relative; width: 100%; margin-top: 10px;">
+      <div style="position: relative; width: 100%; margin-bottom: 10px;">
         <button class="menu-btn" onclick="toggleFlyout18A(event)" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #ffe8e8 0%, #ffffff 50%, #ffe8e8 100%); color: #d9534f; border-radius: 8px; box-shadow: 0 4px 10px rgba(217, 83, 79, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #d9534f; transform: translateY(-2px); transition: transform 0.2s ease;">
           <span class="icon" style="font-size: 16px;">⚖️</span> 
-          <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Seksyen 18A</span>
+          <div style="line-height: 1.2; text-align: left; display: inline-block; vertical-align: middle; width: calc(100% - 35px);">
+            <span style="font-size: 13px; text-transform: uppercase; font-weight: bold;">Seksyen 18A</span><br>
+            <span style="font-size: 10px; font-weight: bold;">(AKTA KERJA 1955)</span>
+          </div>
         </button>
 
         <!-- Menu Flyout 18A -->
@@ -121,6 +106,24 @@
             </div>
         </div>
       </div>
+
+      <!-- 3. SENARAI REKOD -->
+      <button class="menu-btn" onclick="tambahKalkulator('maklumatGaji')" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+        <span class="icon" style="font-size: 16px;">💳</span> 
+        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Senarai Rekod</span>
+      </button>
+
+      <!-- 4. JANA LAPORAN PENUH -->
+      <button class="menu-btn" onclick="janaLaporanPenuh()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to left, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+        <span class="icon" style="font-size: 16px;">📄</span> 
+        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Laporan Penuh</span>
+      </button>
+
+      <!-- 5. JANA PENYATA GAJI -->
+      <button class="menu-btn" onclick="janaPenyataGaji()" style="width: 100%; box-sizing: border-box; background: linear-gradient(to right, #c6d8f9 0%, #e8f0fe 35%, #ffffff 50%, #e8f0fe 65%, #c6d8f9 100%); color: #1f4e79; border-radius: 8px; box-shadow: 0 4px 10px rgba(31, 78, 121, 0.15), inset 0 2px 3px rgba(255, 255, 255, 0.8); border: 1px solid #1f4e79; margin-bottom: 10px; transform: translateY(-2px); transition: transform 0.2s ease;">
+        <span class="icon" style="font-size: 16px;">💵</span> 
+        <span style="font-size: 14px; text-transform: uppercase; font-weight: bold;">Jana Penyata Gaji</span>
+      </button>
 
     </div>
   </aside>
