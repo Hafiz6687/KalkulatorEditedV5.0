@@ -9,6 +9,7 @@
 let activeCardContext = null;
 const originalGetElement = document.getElementById.bind(document);
 
+// UPGRADE: Global Context Manager (Capture Phase)
 ['click', 'input', 'change', 'focusin'].forEach(eventType => {
     document.addEventListener(eventType, function(e) {
         if (e && e.target && typeof e.target.closest === 'function') {
@@ -172,11 +173,19 @@ document.addEventListener("input", function(e) {
 // =====================================================
 // 3. KALKULATOR TERAS (FORMULA ASAL DIKEKALKAN)
 // =====================================================
+function getORP(customDivisor = null) { 
+    let divisor = customDivisor || 26;
+    let totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary");
+    if(totalSalary === 0) {
+        let orpTotalEl = document.querySelector('[data-original-id="orpTotalSalary"]');
+        if(orpTotalEl) totalSalary = evaluateSmartMath(orpTotalEl.value);
+    }
+    return totalSalary / divisor; 
+}
 
-function getORP() { return updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary") / 26; }
-
-function calculateORP(e) {
-    setContext(e); let totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary"); let ORP = totalSalary / 26;
+function calculateORP(e, customDivisor = null) {
+    setContext(e); let totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary"); 
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor;
     setText("orpResultTotal", formatRM(totalSalary)); setText("orpResult", formatRM(ORP)); toggleResult("orp", true);
 }
 function resetORP() {
@@ -200,11 +209,12 @@ function resetBakiUpah() {
     let el = getElement("orpBakiAmount"); if(el) { el.innerText = "RM 0.00"; el.style.color = ""; } toggleResult("baki", false);
 }
 
-function calculateOTBiasa(e) {
+function calculateOTBiasa(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("otBasicSalary", "otAllowance", "otTotalSalary");
     let hours = Number(getElement("otHours").value); let workingHours = Number(getElement("normalWorkingHours").value);
     if (!workingHours) { alert("Sila pilih jam kerja normal sehari."); return; }
-    let ORP = totalSalary / 26; let hourly = (ORP / workingHours) * 1.5; let amount = hourly * hours;
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let hourly = (ORP / workingHours) * 1.5; let amount = hourly * hours;
     setText("otResultTotal", formatRM(totalSalary)); setText("otORP", formatRM(ORP));
     setText("otHourly", formatRM(hourly)); setText("otAmount", formatRM(amount)); toggleResult("ot", true); autoMasukRumusan('otAmount', activeCardContext);
 }
@@ -213,12 +223,13 @@ function resetOTBiasa() {
     ["otResultTotal", "otORP", "otHourly", "otAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("ot", false);
 }
 
-function calculateLewat(e) {
+function calculateLewat(e, customDivisor = null) {
     if(e && e.target) setContext(e); else if(e && e.closest) activeCardContext = e.closest('.calculator-card');
     let totalSalary = updateSalaryTotal("lewatBasicSalary", "lewatAllowance", "lewatTotalSalary");
     let minutes = Number(getElement("lewatMinit").value); let workingHours = Number(getElement("lewatNormalWorkingHours").value);
     if (!workingHours) { alert("Sila pilih jam kerja normal sehari."); return; }
-    let ORP = totalSalary / 26; let hourly = ORP / workingHours; let minutely = hourly / 60; let amount = minutely * minutes;
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let hourly = ORP / workingHours; let minutely = hourly / 60; let amount = minutely * minutes;
     setText("lewatResultTotal", formatRM(totalSalary)); setText("lewatORP", formatRM(ORP));
     setText("lewatMinutely", formatRM(minutely)); setText("lewatAmount", formatRM(amount)); toggleResult("lewat", true); autoMasukRumusan('lewatAmount', activeCardContext);
 }
@@ -228,11 +239,12 @@ function resetLewat(e) {
     ["lewatResultTotal", "lewatORP", "lewatMinutely", "lewatAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("lewat", false);
 }
 
-function calculateOTRH(e) {
+function calculateOTRH(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("otRHBasicSalary", "otRHAllowance", "otRHTotalSalary");
     let hours = Number(getElement("otRHHours").value); let workingHours = Number(getElement("otRHNormalWorkingHours").value);
     if (!workingHours) { alert("Sila pilih jam kerja normal sehari."); return; }
-    let ORP = totalSalary / 26; let hourly = (ORP / workingHours) * 2.0; let amount = hourly * hours;
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let hourly = (ORP / workingHours) * 2.0; let amount = hourly * hours;
     setText("otRHResultTotal", formatRM(totalSalary)); setText("otRHORP", formatRM(ORP));
     setText("otRHHourly", formatRM(hourly)); setText("otRHAmount", formatRM(amount)); toggleResult("otRH", true); autoMasukRumusan('otRHAmount', activeCardContext);
 }
@@ -241,11 +253,12 @@ function resetOTRH() {
     ["otRHResultTotal", "otRHORP", "otRHHourly", "otRHAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("otRH", false);
 }
 
-function calculateOTPH(e) {
+function calculateOTPH(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("otPHBasicSalary", "otPHAllowance", "otPHTotalSalary");
     let hours = Number(getElement("otPHHours").value); let workingHours = Number(getElement("otPHWorkingHours").value);
     if (!workingHours) { alert("Sila pilih jam kerja normal sehari."); return; }
-    let ORP = totalSalary / 26; let hourly = (ORP / workingHours) * 3.0; let amount = hourly * hours;
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let hourly = (ORP / workingHours) * 3.0; let amount = hourly * hours;
     setText("otPHResultTotal", formatRM(totalSalary)); setText("otPHORP", formatRM(ORP));
     setText("otPHHourly", formatRM(hourly)); setText("otPHAmount", formatRM(amount)); toggleResult("otPH", true); autoMasukRumusan('otPHAmount', activeCardContext);
 }
@@ -254,9 +267,11 @@ function resetOTPH() {
     ["otPHResultTotal", "otPHORP", "otPHHourly", "otPHAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("otPH", false);
 }
 
-function calculateHariRehat(e) {
+function calculateHariRehat(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("rhBasicSalary", "rhAllowance", "rhTotalSalary");
-    let days = Number(getElement("rhDays").value); let ORP = totalSalary / 26; let daily = ORP * 0.5; let amount = daily * days;
+    let days = Number(getElement("rhDays").value); 
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let daily = ORP * 0.5; let amount = daily * days;
     setText("rhResultTotal", formatRM(totalSalary)); setText("rhORP", formatRM(ORP));
     setText("rhDaily", formatRM(daily)); setText("rhAmount", formatRM(amount)); toggleResult("rh", true); autoMasukRumusan('rhAmount', activeCardContext);
 }
@@ -265,9 +280,11 @@ function resetHariRehat() {
     ["rhResultTotal", "rhORP", "rhDaily", "rhAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("rh", false);
 }
 
-function calculateHariRehatLebih(e) {
+function calculateHariRehatLebih(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("rhMoreBasicSalary", "rhMoreAllowance", "rhMoreTotalSalary");
-    let days = Number(getElement("rhMoreDays").value); let ORP = totalSalary / 26; let daily = ORP; let amount = daily * days;
+    let days = Number(getElement("rhMoreDays").value); 
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let daily = ORP; let amount = daily * days;
     setText("rhMoreResultTotal", formatRM(totalSalary)); setText("rhMoreORP", formatRM(ORP));
     setText("rhMoreDaily", formatRM(daily)); setText("rhMoreAmount", formatRM(amount)); toggleResult("rhMore", true); autoMasukRumusan('rhMoreAmount', activeCardContext);
 }
@@ -276,9 +293,11 @@ function resetHariRehatLebih() {
     ["rhMoreResultTotal", "rhMoreORP", "rhMoreDaily", "rhMoreAmount"].forEach(id => setText(id, "RM 0.00")); toggleResult("rhMore", false);
 }
 
-function calculatePH(e) {
+function calculatePH(e, customDivisor = null) {
     setContext(e); let totalSalary = updateSalaryTotal("phBasicSalary", "phAllowance", "phTotalSalary");
-    let days = Number(getElement("phDays").value); let ORP = totalSalary / 26; let daily = ORP * 2; let amount = daily * days;
+    let days = Number(getElement("phDays").value); 
+    let divisor = customDivisor || 26; let ORP = totalSalary / divisor; 
+    let daily = ORP * 2; let amount = daily * days;
     setText("phResultTotal", formatRM(totalSalary)); setText("phORP", formatRM(ORP));
     setText("phDaily", formatRM(daily)); setText("phAmount", formatRM(amount)); toggleResult("ph", true); autoMasukRumusan('phAmount', activeCardContext);
 }
@@ -327,8 +346,8 @@ function resetSeksyen18A() {
     ["month1Title", "month2Title", "month1Days", "month2Days"].forEach(id => setText(id, "-")); toggleResult("sec18A", false);
 }
 
-function calculateCutiTahunan(e) {
-    setContext(e); let ORP = getORP(); let days = Number(getElement("annualLeaveDays").value); let amount = ORP * days;
+function calculateCutiTahunan(e, customDivisor = null) {
+    setContext(e); let ORP = getORP(customDivisor); let days = Number(getElement("annualLeaveDays").value); let amount = ORP * days;
     setText("annualLeaveORP", formatRM(ORP)); setText("annualLeaveAmount", formatRM(amount)); toggleResult("annualLeave", true); autoMasukRumusan('annualLeaveAmount', activeCardContext);
 }
 function resetCutiTahunan() {
@@ -342,8 +361,8 @@ function autoKiraBakiCuti() {
     getElement('annualLeaveDays').value = baki < 0 ? 0 : baki;
 }
 
-function calculateCutiSakit(e) {
-    setContext(e); let ORP = getORP(); let days = Number(getElement("sickLeaveDays").value); let amount = ORP * days;
+function calculateCutiSakit(e, customDivisor = null) {
+    setContext(e); let ORP = getORP(customDivisor); let days = Number(getElement("sickLeaveDays").value); let amount = ORP * days;
     setText("sickLeaveORP", formatRM(ORP)); setText("sickLeaveAmount", formatRM(amount)); toggleResult("sickLeave", true); autoMasukRumusan('sickLeaveAmount', activeCardContext);
 }
 function resetCutiSakit() {
@@ -1330,6 +1349,7 @@ function paparModalLaporan(jenis) {
         setTimeout(() => tunjukTourElaunPopup(), 400);
         
     } else {
+        // [Kod Laporan Penuh di sini kekal sama - abaikan ubah yang tidak berkaitan]
         let modalHtml = `
         <div id="modalLaporanPenuh" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(2px);">
             <div style="background: white; padding: 25px 30px; border-radius: 10px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; border-top: 5px solid #1f4e79;">
@@ -1367,6 +1387,8 @@ function teruskanJanaLaporan(jenis) {
     let namaMajikan = getV('inputNamaMajikan');
 
     if (jenis === 'penyata') {
+        
+        // VALIDASI: Semak Jika Maklumat Perkhidmatan Dikosongkan
         let msLayak = ['modPHLayak', 'modALLayak', 'modMCLayak', 'modWDLayak'];
         let msGuna = ['modPHGuna', 'modALGuna', 'modMCGuna', 'modWDGuna'];
         let isIncomplete = false;
@@ -1378,7 +1400,7 @@ function teruskanJanaLaporan(jenis) {
 
         if (isIncomplete) {
             if(typeof tunjukTourMaklumatPerkhidmatan === 'function') tunjukTourMaklumatPerkhidmatan();
-            return; 
+            return; // Hentikan janaan
         }
 
         noDaftarMajikan = getV('inputNoDaftarMajikan');
@@ -1389,7 +1411,7 @@ function teruskanJanaLaporan(jenis) {
         pendahuluanN = getV('inputPendahuluanNilai');
         absentH = getV('inputAbsentHari'); absentN = getV('inputAbsentNilai');
 
-        svcData = {
+svcData = {
             phL: getV('modPHLayak'), phG: getV('modPHGuna'), phB: getV('modPHBaki'), phS: getV('inputPHSemasa'),
             alL: getV('modALLayak'), alG: getV('modALGuna'), alB: getV('modALBaki'), alS: getV('inputALSemasa'),
             mcL: getV('modMCLayak'), mcG: getV('modMCGuna'), mcB: getV('modMCBaki'), mcS: getV('inputMCSemasa'),
@@ -1419,19 +1441,23 @@ function teruskanJanaLaporan(jenis) {
         });
     }
 
-    let namaPekerja = getV('inputNamaLaporan');
+let namaPekerja = getV('inputNamaLaporan');
     let icPekerja = getV('inputICLaporan');
     let noPekerja = getV('inputNoPekerjaLaporan');
 
+    // JANA ID UNIK UNTUK REKOD INI
     let unikId = 'rekod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
     tambahRekodKeMaklumatGaji(jenis, namaPekerja, namaMajikan, tempohUpah, unikId);
+
+    // KEKALKAN DATA MODAL (Hanya hide, jangan remove)
     document.getElementById('modalLaporanPenuh').style.display = 'none'; 
     
+// TAMBAH unikId DI HUJUNG PARAMETER
     prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenis, { 
         senaraiElaun, senaraiPotongan, kwspP, kwspN, perkesoP, perkesoN, sipP, sipN, pendahuluanN, absentH, absentN, svcData 
     }, unikId);
 }
-
 window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
 
 window.bukaRekodSimpanan = function(e) {
@@ -1442,7 +1468,10 @@ window.bukaRekodSimpanan = function(e) {
     let htmlContent = window.simpananHTMLGlobal[id];
     
     if(htmlContent) {
+        // PENAMBAHBAIKAN 1: Buang butang "Simpan" secara dinamik untuk paparan peringkat ini sahaja
         htmlContent = htmlContent.replace(/<a[^>]*>💾 Simpan<\/a>/gi, '');
+
+        // PENAMBAHBAIKAN 2: Ubah fungsi Kemaskini supaya memanggil pengembali state kalkulator asal
         htmlContent = htmlContent.replace(
             /<a href="#" onclick="window\.close\(\); return false;">✏️ Kemaskini<\/a>/gi,
             '<a href="#" onclick="if(window.opener && typeof window.opener.kembaliKeKalkulator === \'function\') { window.opener.kembaliKeKalkulator(); } window.close(); return false;">✏️ Kemaskini</a>'
@@ -1459,6 +1488,7 @@ window.bukaRekodSimpanan = function(e) {
 };
 
 window.hapusRekodSimpanan = function(e) {
+    // Tangkap butang yang ditekan dan tarik ID yang disorokkan (data-id)
     let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
     if (!btn) return;
     
@@ -1472,14 +1502,17 @@ window.hapusRekodSimpanan = function(e) {
 };
 
 window.kembaliKeKalkulator = function() {
+    // 1. Buang panel jadual Maklumat Gaji yang sedang dipapar
     let activeMg = document.getElementById('active-maklumatGaji');
     if (activeMg) activeMg.remove();
 
+    // 2. Munculkan kembali kesemua kalkulator dan pengiraan asal pengguna
     document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
         kad.style.display = '';
         kad.classList.remove('sementara-sembunyi');
     });
 
+    // 3. Pastikan Rumusan dan Warning Box dipaparkan semula seperti biasa
     let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
     if (semuaKadAktif.length > 0) {
         let rumusanCard = document.querySelector('.rumusan-card');
@@ -1488,7 +1521,6 @@ window.kembaliKeKalkulator = function() {
         if (warningBox) warningBox.style.display = "block";
     }
 };
-
 function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) {
     let tbody = document.querySelector('#card-maklumatGaji tbody');
     if (!tbody) return;
@@ -1497,21 +1529,25 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     let warnaTeks = jenis === 'penyata' ? '#198754' : '#0d6efd'; 
     let warnaBg   = jenis === 'penyata' ? '#d1e7dd' : '#cfe2ff';
 
+    // Pastikan tiada ruang kosong (space) yang berlebihan merosakkan semakan
     let safeNama = (namaPekerja || '-').trim();
     let safeMajikan = (majikan || '-').trim();
 
+    // PENAMBAHBAIKAN: Semakan pintar menyokong rekod lama dan baru
     let semuaBaris = tbody.querySelectorAll('tr');
     semuaBaris.forEach(baris => {
         let isMatch = false;
         let oldJenis = baris.getAttribute('data-jenis');
         
         if (oldJenis) {
+            // Jika rekod dicipta menggunakan kod versi baharu (ada data-attribute)
             let oldPekerja = baris.getAttribute('data-pekerja');
             let oldMajikan = baris.getAttribute('data-majikan');
             if (oldJenis === jenisTeks && oldPekerja === safeNama && oldMajikan === safeMajikan) {
                 isMatch = true;
             }
         } else {
+            // Fallback: Jika rekod lama dicipta sebelum ini (tiada data-attribute)
             let tds = baris.querySelectorAll('td');
             if (tds.length >= 3) {
                 let textJenis = tds[0].innerText.includes('Penyata Gaji') ? 'Penyata Gaji' : (tds[0].innerText.includes('Laporan') ? 'Laporan' : '');
@@ -1523,6 +1559,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
             }
         }
 
+        // Padam label BARU pada rekod lama yang dijumpai
         if (isMatch) {
             let labelLama = baris.querySelector('.label-rekod-baru');
             if (labelLama) labelLama.remove();
@@ -1531,6 +1568,8 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
 
     let tr = document.createElement('tr');
     tr.style.borderBottom = "1px solid #eee";
+    
+    // Tanam identiti untuk mudah dikesan kelak
     tr.setAttribute('data-jenis', jenisTeks);
     tr.setAttribute('data-pekerja', safeNama);
     tr.setAttribute('data-majikan', safeMajikan);
@@ -1556,7 +1595,6 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
 
     tbody.appendChild(tr);
 }
-
 function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenisCetak, xtra, unikId) {
     const senaraiKalkulator = [
         { id: "orpData", tajuk: "Kadar Upah Biasa (ORP)" }, { id: "bakiData", tajuk: "Baki Upah / Gaji" }, 
@@ -1813,7 +1851,7 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
             </table>
         `;
 
-        let htmlPotonganDalaman = "";
+let htmlPotonganDalaman = "";
         if (xtra) {
             let itemsPotongan = [
                 { label: "Pendahuluan", amt: xtra.pendahuluanN },
@@ -1857,9 +1895,11 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
             </div>
         `;
 
+// KUTIP DATA KELAYAKAN DARI XTRA (MODAL POP-UP)
         let svc = xtra.svcData || {};
         let fDay = (val) => (val && val !== "-" && val !== "") ? val : "0";
 
+// TAMBAHAN BARU: JADUAL REKOD CUTI BULAN SEMASA (40% RUANG KANAN)
         let htmlCutiSemasa = `
             <div class="report-box" style="padding: 0; border: 1px solid #aaa; display: flex; flex-direction: column; height: 100%;">
                 <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px; margin: 0; border-radius: 0; border-bottom: 1px solid #aaa;">CUTI BULAN SEMASA</div>
@@ -1874,6 +1914,7 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
             </div>
         `;
 
+        // DIKEMASKINI: JADUAL MAKLUMAT PERKHIDMATAN (60% RUANG KIRI)
         let htmlMaklumatPerkhidmatan = `
             <div class="report-box" style="padding: 0; border: 1px solid #aaa; display: flex; flex-direction: column; height: 100%; border-left: 5px solid #1f4e79;">
                 <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px; margin: 0; border-radius: 0; border-bottom: 1px solid #aaa;">MAKLUMAT BERKAITAN PERKHIDMATAN</div>
@@ -1933,6 +1974,7 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
         </div>
         ${bersihHtml}
         
+        <!-- DIKEMASKINI: GRID LAYOUT 60(3) : 40(2) SEPERTI YANG DIMINTA -->
         <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 15px; margin-bottom: 15px; grid-column: 1 / -1; align-items: stretch;">
             ${htmlMaklumatPerkhidmatan}
             ${htmlCutiSemasa}
@@ -1949,7 +1991,7 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
         contentSeterusnya = htmlLaporan; 
     }
 
-    let maklumatSyarikatPekerjaHTML = "";
+let maklumatSyarikatPekerjaHTML = "";
     if (namaPekerja !== "" || icPekerja !== "" || noPekerja !== "" || namaMajikan !== "") {
         maklumatSyarikatPekerjaHTML = `<div class="report-box" style="grid-column: 1 / -1; margin-bottom: 3pt; border-left: 5px solid #1f4e79;">
             <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px;">MAKLUMAT PEKERJA & SYARIKAT</div>
@@ -1964,8 +2006,9 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
 
     let cssBaru = `.floating-action-bar { position: fixed; top: 25px; right: 25px; display: flex; z-index: 9999; align-items: center; } .kebab-btn { background: #0d6efd; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 24px; cursor: pointer; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; display: flex; justify-content: center; align-items: center; line-height: 1; padding-bottom: 5px; } .kebab-btn:hover { background: #0b5ed7; transform: scale(1.05); } .kebab-dropdown { display: none; position: absolute; right: 0; top: 115%; background-color: white; min-width: 170px; box-shadow: 0px 4px 15px rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; border: 1px solid #ddd; text-align: left; } .kebab-dropdown a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 13px; font-weight: bold; transition: 0.2s; } .kebab-dropdown a:hover { background-color: #f4f6f9; } .kebab-dropdown a:first-child { border-bottom: 1px solid #eee; } @media print { .floating-action-bar, .print-btn-container { display: none !important; } }`;
     
-    let cetakHTML = `<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><title>Laporan Pengiraan Akta Kerja 1955</title><style>* { font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; } body { color: #111; line-height: 1.35; padding: 20px; font-size: 11px; background: #fdfdfd; margin-bottom: 80px; } .main-title { text-align: center; margin-bottom: 2px; font-size: 18px; font-weight: bold; border-bottom: 2px solid #222; padding-bottom: 6px; text-transform: uppercase; color: #000; letter-spacing: 1px; } .subtitle { text-align: center; color: #555; margin-top: 5px; margin-bottom: 25px; font-size: 11px; } .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-items: start; } .report-box { border: 1px solid #aaa; padding: 12px; border-radius: 6px; page-break-inside: avoid; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); } .report-header { font-size: 13px; font-weight: 800; text-align: center; background: #e8eaed; padding: 8px; border-bottom: 1px solid #aaa; margin: -12px -12px 12px -12px; border-radius: 6px 6px 0 0; text-transform: uppercase; color: #1a1a1a; letter-spacing: 0.5px; } .report-section-title { font-size: 10px; font-weight: bold; color: #1f4e79; letter-spacing: 0.5px; border-bottom: 1px dashed #ccc; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; } .param-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-bottom: 12px; } .param-label { padding: 3px 0; color: #444; width: 55%; } .param-value { padding: 3px 0; text-align: right; font-weight: 700; color: #000; } .formula-box { background-color: #f4f6f9; border-left: 3px solid #1f4e79; padding: 10px 12px; margin: 12px 0; font-size: 11px; color: #222; border-radius: 0 4px 4px 0; } .formula-title { font-weight: bold; font-size: 10px; color: #1f4e79; margin-bottom: 6px; letter-spacing: 0.5px; } .compact-result .result-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; flex-wrap: wrap; } .compact-result .result-row span { font-size: 11px; color: #333; } .compact-result .result-row strong, #orpBakiAmount { font-size: 12px; color: #000; white-space: nowrap; } .compact-result hr { display: none !important; } .clean-table { width: 100%; border-collapse: collapse; font-size: 11px; border: none; margin-bottom: 5px; } .clean-table td { padding: 4px 2px; border: none; color: #222; } .highlight-row, .result-row[style*="background"] { background: transparent !important; border: 1.5px solid #1f4e79; padding: 8px !important; border-radius: 4px; margin-top: 10px; } .highlight-row span, .result-row[style*="background"] span { color: #1f4e79 !important; font-weight: bold; } .highlight-row strong, .result-row[style*="background"] strong { color: #1f4e79 !important; font-size: 14px !important; } @media print { body { padding: 0; background: #fff; margin-bottom: 0; } .report-box { border: 1px solid #aaa; box-shadow: none; } .report-header, .formula-box, .highlight-row, .result-row[style*="background"] { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } ${cssBaru} </style></head><body><div class="floating-action-bar"><div style="position: relative;"><button class="kebab-btn" onclick="var d = document.getElementById('kebabDropdown'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">&#8942;</button><div id="kebabDropdown" class="kebab-dropdown"><a href="#" onclick="window.close(); return false;">✏️ Kemaskini</a><a href="#" onclick="window.print(); return false;">🖨️ Cetak Laporan</a><a href="#" onclick="if(window.opener){window.opener.tambahKalkulator('maklumatGaji');} window.close(); return false;">💾 Simpan</a></div></div></div>${tajukHeaderHTML}<div class="grid-container">${maklumatSyarikatPekerjaHTML}${contentSeterusnya}</div><div class="print-btn-container" style="text-align: center; margin-top: 30px; grid-column: 1 / -1;"><p style="font-size: 11px; color:#666; font-style: italic;">*Untuk simpan dalam peranti, sila pilih <b>'Save as PDF'</b> pada tetingkap pencetak (Destination).</p></div></body></html>`;
+let cetakHTML = `<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><title>Laporan Pengiraan Akta Kerja 1955</title><style>* { font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; } body { color: #111; line-height: 1.35; padding: 20px; font-size: 11px; background: #fdfdfd; margin-bottom: 80px; } .main-title { text-align: center; margin-bottom: 2px; font-size: 18px; font-weight: bold; border-bottom: 2px solid #222; padding-bottom: 6px; text-transform: uppercase; color: #000; letter-spacing: 1px; } .subtitle { text-align: center; color: #555; margin-top: 5px; margin-bottom: 25px; font-size: 11px; } .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-items: start; } .report-box { border: 1px solid #aaa; padding: 12px; border-radius: 6px; page-break-inside: avoid; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); } .report-header { font-size: 13px; font-weight: 800; text-align: center; background: #e8eaed; padding: 8px; border-bottom: 1px solid #aaa; margin: -12px -12px 12px -12px; border-radius: 6px 6px 0 0; text-transform: uppercase; color: #1a1a1a; letter-spacing: 0.5px; } .report-section-title { font-size: 10px; font-weight: bold; color: #1f4e79; letter-spacing: 0.5px; border-bottom: 1px dashed #ccc; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; } .param-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-bottom: 12px; } .param-label { padding: 3px 0; color: #444; width: 55%; } .param-value { padding: 3px 0; text-align: right; font-weight: 700; color: #000; } .formula-box { background-color: #f4f6f9; border-left: 3px solid #1f4e79; padding: 10px 12px; margin: 12px 0; font-size: 11px; color: #222; border-radius: 0 4px 4px 0; } .formula-title { font-weight: bold; font-size: 10px; color: #1f4e79; margin-bottom: 6px; letter-spacing: 0.5px; } .compact-result .result-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; flex-wrap: wrap; } .compact-result .result-row span { font-size: 11px; color: #333; } .compact-result .result-row strong, #orpBakiAmount { font-size: 12px; color: #000; white-space: nowrap; } .compact-result hr { display: none !important; } .clean-table { width: 100%; border-collapse: collapse; font-size: 11px; border: none; margin-bottom: 5px; } .clean-table td { padding: 4px 2px; border: none; color: #222; } .highlight-row, .result-row[style*="background"] { background: transparent !important; border: 1.5px solid #1f4e79; padding: 8px !important; border-radius: 4px; margin-top: 10px; } .highlight-row span, .result-row[style*="background"] span { color: #1f4e79 !important; font-weight: bold; } .highlight-row strong, .result-row[style*="background"] strong { color: #1f4e79 !important; font-size: 14px !important; } @media print { body { padding: 0; background: #fff; margin-bottom: 0; } .report-box { border: 1px solid #aaa; box-shadow: none; } .report-header, .formula-box, .highlight-row, .result-row[style*="background"] { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } ${cssBaru} </style></head><body><div class="floating-action-bar"><div style="position: relative;"><button class="kebab-btn" onclick="var d = document.getElementById('kebabDropdown'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">&#8942;</button><div id="kebabDropdown" class="kebab-dropdown"><a href="#" onclick="window.close(); return false;">✏️ Kemaskini</a><a href="#" onclick="window.print(); return false;">🖨️ Cetak Laporan</a><a href="#" onclick="if(window.opener){window.opener.tambahKalkulator('maklumatGaji');} window.close(); return false;">💾 Simpan</a></div></div></div>${tajukHeaderHTML}<div class="grid-container">${maklumatSyarikatPekerjaHTML}${contentSeterusnya}</div><div class="print-btn-container" style="text-align: center; margin-top: 30px; grid-column: 1 / -1;"><p style="font-size: 11px; color:#666; font-style: italic;">*Untuk simpan dalam peranti, sila pilih <b>'Save as PDF'</b> pada tetingkap pencetak (Destination).</p></div></body></html>`;
     
+    // ++ KOD SIMPANAN DATA UNTUK FUNGSI BUKA ++
     if (unikId) {
         window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
         window.simpananHTMLGlobal[unikId] = cetakHTML;
@@ -1975,7 +2018,6 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
     if (!tetingkapCetak) { alert("Pop-up disekat oleh pelayar web (browser) anda. Sila benarkan 'Pop-ups and redirects' untuk laman ini bagi melihat laporan."); return; }
     tetingkapCetak.document.write(cetakHTML); tetingkapCetak.document.close(); tetingkapCetak.focus(); 
 }
-
 // =====================================================
 // 6. SISTEM LOGIN & RESET 
 // =====================================================
@@ -2126,28 +2168,24 @@ window.resetKalkulatorIndividu = function(e) {
     }
 };
 
-
 // =====================================================
 // 7. ENGINE 2026: CLONE & MULTI-INSTANCE
 // =====================================================
 window.tambahKalkulator = function(templateId) {
-    // 1. Highlight menu aktif
     document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
     let activeBtn = document.querySelector(`.menu-btn[onclick*="${templateId}"]`);
     if(activeBtn) activeBtn.classList.add('active');
 
-    // 2. Dapatkan kontena utama
     let grid = document.getElementById('active-calculators-grid');
     let rumusanCard = document.querySelector('.rumusan-card');
     let warningBox = document.querySelector('.warning-box');
 
-    if (!grid) return; // Hentikan jika grid tiada
-
-    // 3. Logik Maklumat Gaji vs Kalkulator Biasa
     if (templateId === 'maklumatGaji') {
+        // 1. Padamkan kad Maklumat Gaji sedia ada (jika ada) untuk elak duplikasi
         let existingMg = document.querySelectorAll('#active-maklumatGaji');
         existingMg.forEach(mg => mg.remove());
 
+        // 2. Sembunyikan kad aktif sementara
         let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
         semuaKadAktif.forEach(kad => {
             kad.classList.add('sementara-sembunyi');
@@ -2160,7 +2198,13 @@ window.tambahKalkulator = function(templateId) {
         let existingMg = document.getElementById('active-maklumatGaji');
         if (existingMg) {
             existingMg.remove();
-            document.querySelectorAll('.sementara-sembunyi').forEach(kad => kad.remove());
+            
+            // PENAMBAHBAIKAN UTAMA: Jika pilih kalkulator baharu semasa di paparan Maklumat Gaji,
+            // anggap sebagai MULA PROSES BARU. Padam semua kad yang disorok, reset rumusan & elaun.
+            document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
+                kad.remove();
+            });
+            
             if (typeof resetRumusan === 'function') resetRumusan();
             if (typeof senaraiElaunGlobal !== 'undefined') senaraiElaunGlobal = [];
             if (rumusanCard) rumusanCard.style.display = "none";
@@ -2168,16 +2212,11 @@ window.tambahKalkulator = function(templateId) {
         }
     }
 
-    // 4. Proses Klon Kad
     let templateCard = document.getElementById('card-' + templateId);
-    if (!templateCard) {
-        alert('Ralat: Templat Kalkulator tidak ditemui dalam HTML!');
-        return;
-    }
+    if (!templateCard) return alert('Kalkulator tidak ditemui!');
     
     let clone = templateCard.cloneNode(true);
     clone.classList.remove('hidden-template');
-    clone.style.display = 'block'; // Jaminan kalkulator pasti muncul
     
     let uniqueSuffix = '_' + Math.random().toString(36).substr(2, 9);
     
@@ -2187,25 +2226,33 @@ window.tambahKalkulator = function(templateId) {
     } else {
         clone.id = clone.id + uniqueSuffix;
         clone.style.position = "relative";
-        
-        // Butang Tutup
         let closeBtn = document.createElement('button');
         closeBtn.className = "close-card-btn";
         closeBtn.innerHTML = "X";
         closeBtn.onclick = function() { 
-            let tempId = clone.getAttribute('data-template-id');
+            let templateId = clone.getAttribute('data-template-id');
             clone.remove(); 
             
             let badanRumusan = document.getElementById('badanJadualRumusan');
-            if (badanRumusan && tempId) {
+            if (badanRumusan && templateId) {
                 let mappingSasaran = {
-                    'orp': 'orpBakiAmount', 'baki': 'orpBakiAmount', 'otBiasa': 'otAmount',
-                    'rehatKurang': 'rhAmount', 'rehatLebih': 'rhMoreAmount', 'sec18A': 'amount18A',
-                    'otRehat': 'otRHAmount', 'kelepasan': 'phAmount', 'otKelepasan': 'otPHAmount',
-                    'cutiTahunan': 'annualLeaveAmount', 'cutiSakit': 'sickLeaveAmount',
-                    'notis': ['resUniMonthAmount', 'resUni18AAmount'], 'faedah': 'tbbAmount', 'lewat': 'lewatAmount'
+                    'orp': 'orpBakiAmount',
+                    'baki': 'orpBakiAmount',
+                    'otBiasa': 'otAmount',
+                    'rehatKurang': 'rhAmount',
+                    'rehatLebih': 'rhMoreAmount',
+                    'sec18A': 'amount18A',
+                    'otRehat': 'otRHAmount',
+                    'kelepasan': 'phAmount',
+                    'otKelepasan': 'otPHAmount',
+                    'cutiTahunan': 'annualLeaveAmount',
+                    'cutiSakit': 'sickLeaveAmount',
+                    'notis': ['resUniMonthAmount', 'resUni18AAmount'],
+                    'faedah': 'tbbAmount',
+                    'lewat': 'lewatAmount'
                 };
-                let sasaranId = mappingSasaran[tempId];
+
+                let sasaranId = mappingSasaran[templateId];
                 if (sasaranId) {
                     let barisRumusan = badanRumusan.querySelectorAll('tr');
                     barisRumusan.forEach(tr => {
@@ -2217,22 +2264,28 @@ window.tambahKalkulator = function(templateId) {
                             }
                         }
                     });
-                    if (typeof kiraJumlahKeseluruhanRumusan === 'function') kiraJumlahKeseluruhanRumusan(); 
+                    if (typeof kiraJumlahKeseluruhanRumusan === 'function') {
+                        kiraJumlahKeseluruhanRumusan(); 
+                    }
                 }
             }
 
             let kadTinggal = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-            if (kadTinggal.length === 0 && rumusanCard) rumusanCard.style.display = "none";
-            else setTimeout(() => { if(typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
+            if (kadTinggal.length === 0) {
+                if (rumusanCard) { rumusanCard.style.display = "none"; }
+            } else {
+                setTimeout(() => window.semakDanTukarElaun(), 50);
+            }
         };
         clone.appendChild(closeBtn);
     }
 
-    // 5. Ubah ID Elemen Dalaman
     let allElementsWithId = clone.querySelectorAll('[id]');
     allElementsWithId.forEach(el => {
         el.setAttribute('data-original-id', el.id);
-        if (templateId !== 'maklumatGaji') el.id = el.id + uniqueSuffix;
+        if (templateId !== 'maklumatGaji') {
+            el.id = el.id + uniqueSuffix;
+        }
         if(el.tagName === 'INPUT' && el.type !== 'button') el.value = "";
         if(el.tagName === 'STRONG' || el.tagName === 'SPAN') {
             if(el.innerText.includes('RM')) el.innerText = 'RM 0.00';
@@ -2241,62 +2294,67 @@ window.tambahKalkulator = function(templateId) {
     });
     
     if (templateId !== 'maklumatGaji') {
-        clone.querySelectorAll('[name]').forEach(el => el.setAttribute('name', el.getAttribute('name') + uniqueSuffix));
+        let allElementsWithName = clone.querySelectorAll('[name]');
+        allElementsWithName.forEach(el => {
+            el.setAttribute('name', el.getAttribute('name') + uniqueSuffix);
+        });
     }
 
-    // 6. Autofill Gaji (Diasingkan supaya tidak ganggu paparan jika ralat)
     if (templateId !== 'maklumatGaji') {
-        try {
-            let currentBasic = ""; let currentAllowance = "";
-            function extractSalaryFromCard(kad) {
-                for (let mapKey of Object.keys(salaryMap)) {
-                    let sourceBasic = kad.querySelector(`[data-original-id="${mapKey}"]`);
-                    if (sourceBasic && sourceBasic.value) {
-                        let semakNilai = evaluateSmartMath(sourceBasic.value);
-                        if (semakNilai > 0) {
-                            let sourceAllowId = salaryMap[mapKey][0];
-                            let sourceAllow = kad.querySelector(`[data-original-id="${sourceAllowId}"]`);
-                            return { basic: sourceBasic.value, allow: sourceAllow ? sourceAllow.value : "" };
-                        }
-                    }
-                }
-                return null;
-            }
-
-            if (activeCardContext && activeCardContext.classList && !activeCardContext.classList.contains('hidden-template') && !activeCardContext.classList.contains('rumusan-card')) {
-                let extracted = extractSalaryFromCard(activeCardContext);
-                if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; }
-            }
-
-            if (currentBasic === "") {
-                let kadAktifLain = Array.from(document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)'));
-                for (let i = kadAktifLain.length - 1; i >= 0; i--) {
-                    let extracted = extractSalaryFromCard(kadAktifLain[i]);
-                    if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; break; }
-                }
-            }
-
-            if (currentBasic !== "") {
-                for (let targetKey of Object.keys(salaryMap)) {
-                    let targetBasic = clone.querySelector(`[data-original-id="${targetKey}"]`);
-                    let targetAllow = clone.querySelector(`[data-original-id="${salaryMap[targetKey][0]}"]`);
-                    let targetTotal = clone.querySelector(`[data-original-id="${salaryMap[targetKey][1]}"]`);
-
-                    if (targetBasic) {
-                        targetBasic.value = currentBasic;
-                        if (targetAllow && currentAllowance !== "") targetAllow.value = currentAllowance;
-                        if (targetTotal) {
-                            let calcBasic = evaluateSmartMath(currentBasic);
-                            let calcAllow = currentAllowance !== "" ? evaluateSmartMath(currentAllowance) : 0;
-                            targetTotal.value = "RM " + (calcBasic + calcAllow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        }
+        let currentBasic = "";
+        let currentAllowance = "";
+        
+        function extractSalaryFromCard(kad) {
+            for (let mapKey of Object.keys(salaryMap)) {
+                let sourceBasic = kad.querySelector(`[data-original-id="${mapKey}"]`);
+                if (sourceBasic && sourceBasic.value) {
+                    let semakNilai = evaluateSmartMath(sourceBasic.value);
+                    if (semakNilai > 0) {
+                        let allowVal = "";
+                        let sourceAllowId = salaryMap[mapKey][0];
+                        let sourceAllow = kad.querySelector(`[data-original-id="${sourceAllowId}"]`);
+                        if (sourceAllow) allowVal = sourceAllow.value;
+                        return { basic: sourceBasic.value, allow: allowVal };
                     }
                 }
             }
-        } catch(err) { console.warn("Abaikan: Gagal autofill gaji"); }
+            return null;
+        }
+
+        if (activeCardContext && !activeCardContext.classList.contains('hidden-template') && !activeCardContext.classList.contains('rumusan-card')) {
+            let extracted = extractSalaryFromCard(activeCardContext);
+            if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; }
+        }
+
+        if (currentBasic === "") {
+            let kadAktifLain = Array.from(document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)'));
+            for (let i = kadAktifLain.length - 1; i >= 0; i--) {
+                let extracted = extractSalaryFromCard(kadAktifLain[i]);
+                if (extracted) { currentBasic = extracted.basic; currentAllowance = extracted.allow; break; }
+            }
+        }
+
+        if (currentBasic !== "") {
+            for (let targetKey of Object.keys(salaryMap)) {
+                let targetBasic = clone.querySelector(`[data-original-id="${targetKey}"]`);
+                let targetAllowId = salaryMap[targetKey][0];
+                let targetAllow = clone.querySelector(`[data-original-id="${targetAllowId}"]`);
+                let targetTotalId = salaryMap[targetKey][1];
+                let targetTotal = clone.querySelector(`[data-original-id="${targetTotalId}"]`);
+
+                if (targetBasic) {
+                    targetBasic.value = currentBasic;
+                    if (targetAllow && currentAllowance !== "") { targetAllow.value = currentAllowance; }
+                    if (targetTotal) {
+                        let calcBasic = evaluateSmartMath(currentBasic);
+                        let calcAllow = currentAllowance !== "" ? evaluateSmartMath(currentAllowance) : 0;
+                        targetTotal.value = "RM " + (calcBasic + calcAllow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                }
+            }
+        }
     }
 
-    // 7. Re-bind Butang
     let allButtons = clone.querySelectorAll('button');
     allButtons.forEach(btn => {
         let oriClick = btn.getAttribute('onclick');
@@ -2311,19 +2369,14 @@ window.tambahKalkulator = function(templateId) {
         }
     });
 
-    // 8. Masukkan ke dalam DOM & Tunjuk
-    if (rumusanCard) {
-        grid.insertBefore(clone, rumusanCard);
-    } else {
-        grid.appendChild(clone);
-    }
+    if (rumusanCard) grid.insertBefore(clone, rumusanCard); else grid.appendChild(clone);
     
     if (templateId !== 'maklumatGaji' && rumusanCard) { 
         let kadAktifBiasa = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
         if (kadAktifBiasa.length > 0) rumusanCard.style.display = "block"; 
     }
 
-    setTimeout(() => clone.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+    clone.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 // =====================================================
@@ -2341,7 +2394,7 @@ function transformAllowanceField(allowInput) {
     container.className = 'dynamic-allowance-wrapper';
     container.style.cssText = 'width: 100%; margin-bottom: 15px; background: #f4f6f9; padding: 12px; border: 1px dashed #1f4e79; border-radius: 6px; position: relative;';
 
-let htmlRows = '';
+    let htmlRows = '';
     if (senaraiElaunGlobal && senaraiElaunGlobal.length > 0) {
         senaraiElaunGlobal.forEach((elaun, i) => {
             let btnX = i === 0 ? `` : `<button type="button" onclick="buangBarisElaunGlobalKalkulator(this)" style="background:#dc3545; color:white; border:none; padding:0 10px; border-radius:5px; font-weight:bold; cursor:pointer;">X</button>`;
@@ -2549,93 +2602,58 @@ document.addEventListener('DOMContentLoaded', () => {
 function fungsiBaruRumusan(e) {
     if (e) e.preventDefault();
 }
+// =========================================================
+// 9. ENJIN KHAS SEKSYEN 18A (MOD BULAN SEMASA)
+// =========================================================
 
-// =====================================================
-// 9. MENU FLYOUT SEKSYEN 18A & ENJIN DINAMIK (ISOLATED)
-// =====================================================
-document.addEventListener("DOMContentLoaded", function() {
-    let menuBtns = document.querySelectorAll('.menu-btn');
-    let maklumatGajiBtn = null;
-    
-    menuBtns.forEach(btn => {
-        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('maklumatGaji')) {
-            maklumatGajiBtn = btn;
-        }
-    });
+// Fungsi untuk buka/tutup Flyout Menu
+function toggleFlyout18A(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let flyout = document.getElementById('flyoutMenu18ACustom');
+    if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+}
 
-    if (maklumatGajiBtn) {
-        let container = document.createElement('div');
-        container.style.position = 'relative';
-        container.style.marginTop = '5px'; 
-        
-        let btn18A = document.createElement('button');
-        btn18A.className = maklumatGajiBtn.className;
-        btn18A.innerHTML = "⚖️ Seksyen 18A";
-        btn18A.style.width = "100%";
-        btn18A.onclick = function(e) {
-            e.stopPropagation();
-            let flyout = document.getElementById('flyoutMenu18ACustom');
-            if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
-        };
-
-        let flyout = document.createElement('div');
-        flyout.id = "flyoutMenu18ACustom";
-        // DIKEMASKINI: bottom: 100% supaya ia terapung ke atas dan tidak tersorok di bawah skrin
-        flyout.style.cssText = "display: none; position: absolute; bottom: 100%; left: 0; width: 100%; margin-bottom: 10px; background: #fff; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); border-radius: 8px; z-index: 99999; border: 2px solid #1f4e79; max-height: 65vh; overflow-y: auto; text-align: left;";
-        
-        let htmlLinks = '<div style="background:#d9534f; color:white; padding:12px; font-weight:bold; font-size:13px; position:sticky; top:0; z-index:10; border-radius: 8px 8px 0 0;">PILIH KALKULATOR (MOD 18A):</div><div style="padding: 10px;">';
-        
-        const validTemplates = ['orp', 'otBiasa', 'otRehat', 'otKelepasan', 'rehatKurang', 'rehatLebih', 'kelepasan', 'cutiTahunan', 'cutiSakit', 'lewat'];
-        
-        menuBtns.forEach(b => {
-            let onclickAttr = b.getAttribute('onclick');
-            if (onclickAttr && onclickAttr.includes('tambahKalkulator')) {
-                let match = onclickAttr.match(/'([^']+)'/);
-                if (match && validTemplates.includes(match[1])) {
-                    let templateId = match[1];
-                    let text = b.innerText.trim();
-                    htmlLinks += `<a href="#" onclick="tambahKalkulator18ACustom('${templateId}'); document.getElementById('flyoutMenu18ACustom').style.display='none'; return false;" style="display: block; padding: 10px 12px; color: #333; text-decoration: none; border-bottom: 1px dashed #eee; font-size: 12px; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='#ffe8e8'; this.style.color='#d9534f'; this.style.paddingLeft='15px';" onmouseout="this.style.background='transparent'; this.style.color='#333'; this.style.paddingLeft='12px';">${text}</a>`;
-                }
-            }
-        });
-        htmlLinks += '</div>';
-        flyout.innerHTML = htmlLinks;
-
-        container.appendChild(btn18A);
-        container.appendChild(flyout);
-        maklumatGajiBtn.parentNode.insertBefore(container, maklumatGajiBtn.nextSibling);
-
-        document.addEventListener('click', function(e) {
-            if (!container.contains(e.target)) {
-                flyout.style.display = 'none';
-            }
-        });
+// Tutup flyout jika klik di tempat lain
+document.addEventListener('click', function(e) {
+    let flyout = document.getElementById('flyoutMenu18ACustom');
+    if (flyout && flyout.style.display === 'block' && !e.target.closest('#flyoutMenu18ACustom') && !e.target.closest('button[onclick*="toggleFlyout18A"]')) {
+        flyout.style.display = 'none';
     }
 });
 
+// Enjin Mengklon kalkulator dan tukar Mod Formula
 window.tambahKalkulator18ACustom = function(templateId) {
+    // Tutup flyout menu
+    document.getElementById('flyoutMenu18ACustom').style.display = 'none';
+    
+    // Panggil fungsi asal untuk salin UI
     window.tambahKalkulator(templateId);
     
     setTimeout(() => {
         let semuaKad = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
         let newCard = semuaKad[semuaKad.length - 1]; 
-        
         if (!newCard) return;
 
+        // Ubah UI menjadi Merah untuk tandakan Mod 18A
         newCard.style.borderTop = "5px solid #d9534f";
         let h2 = newCard.querySelector('h2');
         if(h2) {
-            h2.innerHTML = h2.innerHTML + ` <br><span style="font-size:12px; color:#d9534f; background:#ffe8e8; padding:3px 8px; border-radius:4px;">Mod Seksyen 18A (Bahagi Hari Dalam Bulan)</span>`;
+            h2.innerHTML = h2.innerHTML + ` <br><span style="font-size:12px; color:#d9534f; background:#ffe8e8; padding:3px 8px; border-radius:4px; display:inline-block; margin-top:5px;">Mod Seksyen 18A (Bahagi Hari Dalam Bulan)</span>`;
         }
 
+        // Tambah Input "Hari Dalam Bulan"
         let formGroups = newCard.querySelectorAll('.form-group');
         if (formGroups.length > 0) {
             let divHari = document.createElement('div');
             divHari.className = "form-group";
-            divHari.innerHTML = `<label style="color:#d9534f; font-weight:bold;">Bilangan Hari Dalam Bulan</label><input type="number" class="hari-bulan-18a" placeholder="Contoh: 28, 30, 31" value="30" style="border: 2px solid #d9534f; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box; background: #fffaf9;">`;
+            divHari.style.width = "100%";
+            divHari.style.marginBottom = "15px";
+            divHari.innerHTML = `<label style="color:#d9534f; font-weight:bold; display:block; margin-bottom:5px;">Bilangan Hari Dalam Bulan</label><input type="number" class="hari-bulan-18a" placeholder="Contoh: 28, 30, 31" value="30" style="border: 2px solid #d9534f; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box; background: #fffaf9; font-size:14px; font-weight:bold;">`;
             formGroups[0].parentNode.insertBefore(divHari, formGroups[0]);
         }
 
+        // Rampas butang 'Kira' dan letak formula bahagi 'hari semasa'
         let btnKira = newCard.querySelector('button[data-action-func*="calculate"], button[onclick*="calculate"]');
         if (btnKira) {
             let newBtnKira = btnKira.cloneNode(true);
@@ -2649,122 +2667,22 @@ window.tambahKalkulator18ACustom = function(templateId) {
             newBtnKira.addEventListener('click', function(e) {
                 let tempContext = activeCardContext;
                 activeCardContext = newCard;
-                
                 try {
                     let hariBulanInput = newCard.querySelector('.hari-bulan-18a');
                     let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : 26; 
-                    let totalSalary = 0, ORP = 0, amount = 0, hourly = 0, daily = 0;
 
-                    if (templateId === 'orp') {
-                        totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary");
-                        ORP = totalSalary / hariBulan;
-                        setText("orpResultTotal", formatRM(totalSalary));
-                        setText("orpResult", formatRM(ORP));
-                        toggleResult("orp", true);
-                    } 
-                    else if (templateId === 'otBiasa') {
-                        totalSalary = updateSalaryTotal("otBasicSalary", "otAllowance", "otTotalSalary");
-                        let hours = Number(getElement("otHours").value); 
-                        let workingHours = Number(getElement("normalWorkingHours").value);
-                        if (!workingHours) return alert("Sila pilih jam kerja normal sehari.");
-                        ORP = totalSalary / hariBulan;
-                        hourly = (ORP / workingHours) * 1.5;
-                        amount = hourly * hours;
-                        setText("otResultTotal", formatRM(totalSalary)); setText("otORP", formatRM(ORP));
-                        setText("otHourly", formatRM(hourly)); setText("otAmount", formatRM(amount)); toggleResult("ot", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('otAmount', activeCardContext);
-                    }
-                    else if (templateId === 'lewat') {
-                        totalSalary = updateSalaryTotal("lewatBasicSalary", "lewatAllowance", "lewatTotalSalary");
-                        let minutes = Number(getElement("lewatMinit").value); 
-                        let workingHours = Number(getElement("lewatNormalWorkingHours").value);
-                        if (!workingHours) return alert("Sila pilih jam kerja normal sehari.");
-                        ORP = totalSalary / hariBulan; 
-                        hourly = ORP / workingHours; 
-                        let minutely = hourly / 60; 
-                        amount = minutely * minutes;
-                        setText("lewatResultTotal", formatRM(totalSalary)); setText("lewatORP", formatRM(ORP));
-                        setText("lewatMinutely", formatRM(minutely)); setText("lewatAmount", formatRM(amount)); toggleResult("lewat", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('lewatAmount', activeCardContext);
-                    }
-                    else if (templateId === 'otRehat') {
-                        totalSalary = updateSalaryTotal("otRHBasicSalary", "otRHAllowance", "otRHTotalSalary");
-                        let hours = Number(getElement("otRHHours").value); 
-                        let workingHours = Number(getElement("otRHNormalWorkingHours").value);
-                        if (!workingHours) return alert("Sila pilih jam kerja normal sehari.");
-                        ORP = totalSalary / hariBulan; 
-                        hourly = (ORP / workingHours) * 2.0; 
-                        amount = hourly * hours;
-                        setText("otRHResultTotal", formatRM(totalSalary)); setText("otRHORP", formatRM(ORP));
-                        setText("otRHHourly", formatRM(hourly)); setText("otRHAmount", formatRM(amount)); toggleResult("otRH", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('otRHAmount', activeCardContext);
-                    }
-                    else if (templateId === 'otKelepasan') {
-                        totalSalary = updateSalaryTotal("otPHBasicSalary", "otPHAllowance", "otPHTotalSalary");
-                        let hours = Number(getElement("otPHHours").value); 
-                        let workingHours = Number(getElement("otPHWorkingHours").value);
-                        if (!workingHours) return alert("Sila pilih jam kerja normal sehari.");
-                        ORP = totalSalary / hariBulan; 
-                        hourly = (ORP / workingHours) * 3.0; 
-                        amount = hourly * hours;
-                        setText("otPHResultTotal", formatRM(totalSalary)); setText("otPHORP", formatRM(ORP));
-                        setText("otPHHourly", formatRM(hourly)); setText("otPHAmount", formatRM(amount)); toggleResult("otPH", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('otPHAmount', activeCardContext);
-                    }
-                    else if (templateId === 'rehatKurang') {
-                        totalSalary = updateSalaryTotal("rhBasicSalary", "rhAllowance", "rhTotalSalary");
-                        let days = Number(getElement("rhDays").value); 
-                        ORP = totalSalary / hariBulan; 
-                        daily = ORP * 0.5; 
-                        amount = daily * days;
-                        setText("rhResultTotal", formatRM(totalSalary)); setText("rhORP", formatRM(ORP));
-                        setText("rhDaily", formatRM(daily)); setText("rhAmount", formatRM(amount)); toggleResult("rh", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('rhAmount', activeCardContext);
-                    }
-                    else if (templateId === 'rehatLebih') {
-                        totalSalary = updateSalaryTotal("rhMoreBasicSalary", "rhMoreAllowance", "rhMoreTotalSalary");
-                        let days = Number(getElement("rhMoreDays").value); 
-                        ORP = totalSalary / hariBulan; 
-                        daily = ORP; 
-                        amount = daily * days;
-                        setText("rhMoreResultTotal", formatRM(totalSalary)); setText("rhMoreORP", formatRM(ORP));
-                        setText("rhMoreDaily", formatRM(daily)); setText("rhMoreAmount", formatRM(amount)); toggleResult("rhMore", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('rhMoreAmount', activeCardContext);
-                    }
-                    else if (templateId === 'kelepasan') {
-                        totalSalary = updateSalaryTotal("phBasicSalary", "phAllowance", "phTotalSalary");
-                        let days = Number(getElement("phDays").value); 
-                        ORP = totalSalary / hariBulan; 
-                        daily = ORP * 2; 
-                        amount = daily * days;
-                        setText("phResultTotal", formatRM(totalSalary)); setText("phORP", formatRM(ORP));
-                        setText("phDaily", formatRM(daily)); setText("phAmount", formatRM(amount)); toggleResult("ph", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('phAmount', activeCardContext);
-                    }
-                    else if (templateId === 'cutiTahunan') {
-                        totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary");
-                        if(totalSalary === 0) {
-                            let orpTotalEl = document.querySelector('[data-original-id="orpTotalSalary"]');
-                            if(orpTotalEl) totalSalary = evaluateSmartMath(orpTotalEl.value);
-                        }
-                        ORP = totalSalary / hariBulan; 
-                        let days = Number(getElement("annualLeaveDays").value); 
-                        amount = ORP * days;
-                        setText("annualLeaveORP", formatRM(ORP)); setText("annualLeaveAmount", formatRM(amount)); toggleResult("annualLeave", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('annualLeaveAmount', activeCardContext);
-                    }
-                    else if (templateId === 'cutiSakit') {
-                        totalSalary = updateSalaryTotal("orpBasicSalary", "orpAllowance", "orpTotalSalary");
-                        if(totalSalary === 0) {
-                            let orpTotalEl = document.querySelector('[data-original-id="orpTotalSalary"]');
-                            if(orpTotalEl) totalSalary = evaluateSmartMath(orpTotalEl.value);
-                        }
-                        ORP = totalSalary / hariBulan; 
-                        let days = Number(getElement("sickLeaveDays").value); 
-                        amount = ORP * days;
-                        setText("sickLeaveORP", formatRM(ORP)); setText("sickLeaveAmount", formatRM(amount)); toggleResult("sickLeave", true);
-                        if(typeof autoMasukRumusan === 'function') autoMasukRumusan('sickLeaveAmount', activeCardContext);
-                    }
+                    // Panggil fungsi asal dengan menghantar hariBulan sebagai parameter kedua
+                    if (templateId === 'orp') calculateORP(e, hariBulan);
+                    else if (templateId === 'otBiasa') calculateOTBiasa(e, hariBulan);
+                    else if (templateId === 'lewat') calculateLewat(e, hariBulan);
+                    else if (templateId === 'otRehat') calculateOTRH(e, hariBulan);
+                    else if (templateId === 'otKelepasan') calculateOTPH(e, hariBulan);
+                    else if (templateId === 'rehatKurang') calculateHariRehat(e, hariBulan);
+                    else if (templateId === 'rehatLebih') calculateHariRehatLebih(e, hariBulan);
+                    else if (templateId === 'kelepasan') calculatePH(e, hariBulan);
+                    else if (templateId === 'cutiTahunan') calculateCutiTahunan(e, hariBulan);
+                    else if (templateId === 'cutiSakit') calculateCutiSakit(e, hariBulan);
+                    
                 } finally {
                     activeCardContext = tempContext;
                 }
