@@ -2154,147 +2154,132 @@ window.resetKalkulatorIndividu = function(e) {
 // 7. ENGINE 2026: CLONE & MULTI-INSTANCE
 // =====================================================
 window.tambahKalkulator = function(templateId) {
-    try {
-        document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-        let activeBtn = document.querySelector(`.menu-btn[onclick*="${templateId}"]`);
-        if(activeBtn) activeBtn.classList.add('active');
+    // 1. Highlight menu aktif
+    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+    let activeBtn = document.querySelector(`.menu-btn[onclick*="${templateId}"]`);
+    if(activeBtn) activeBtn.classList.add('active');
 
-        let grid = document.getElementById('active-calculators-grid');
-        let rumusanCard = document.querySelector('.rumusan-card');
-        let warningBox = document.querySelector('.warning-box');
+    // 2. Dapatkan kontena utama
+    let grid = document.getElementById('active-calculators-grid');
+    let rumusanCard = document.querySelector('.rumusan-card');
+    let warningBox = document.querySelector('.warning-box');
 
-        if (templateId === 'maklumatGaji') {
-            let existingMg = document.querySelectorAll('#active-maklumatGaji');
-            existingMg.forEach(mg => mg.remove());
+    if (!grid) return; // Hentikan jika grid tiada
 
-            let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-            semuaKadAktif.forEach(kad => {
-                kad.classList.add('sementara-sembunyi');
-                kad.style.display = 'none';
-            });
-            if (rumusanCard) rumusanCard.style.display = "none";
-            if (warningBox) warningBox.style.display = "none";
-        } else {
-            if (warningBox) warningBox.style.display = "block";
-            let existingMg = document.getElementById('active-maklumatGaji');
-            if (existingMg) {
-                existingMg.remove();
-                
-                document.querySelectorAll('.sementara-sembunyi').forEach(kad => {
-                    kad.remove();
-                });
-                
-                if (typeof resetRumusan === 'function') resetRumusan();
-                if (typeof senaraiElaunGlobal !== 'undefined') senaraiElaunGlobal = [];
-                if (rumusanCard) rumusanCard.style.display = "none";
-                setTimeout(() => { if (typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
-            }
-        }
+    // 3. Logik Maklumat Gaji vs Kalkulator Biasa
+    if (templateId === 'maklumatGaji') {
+        let existingMg = document.querySelectorAll('#active-maklumatGaji');
+        existingMg.forEach(mg => mg.remove());
 
-        let templateCard = document.getElementById('card-' + templateId);
-        if (!templateCard) return alert('Kalkulator tidak ditemui!');
-        
-        let clone = templateCard.cloneNode(true);
-        clone.classList.remove('hidden-template');
-        clone.style.display = 'block'; // Jaminan supaya kalkulator pasti muncul di skrin
-        
-        let uniqueSuffix = '_' + Math.random().toString(36).substr(2, 9);
-        
-        if (templateId === 'maklumatGaji') {
-            clone.id = 'active-maklumatGaji';
-            clone.style.position = "relative";
-        } else {
-            clone.id = clone.id + uniqueSuffix;
-            clone.style.position = "relative";
-            let closeBtn = document.createElement('button');
-            closeBtn.className = "close-card-btn";
-            closeBtn.innerHTML = "X";
-            closeBtn.onclick = function() { 
-                let tempId = clone.getAttribute('data-template-id');
-                clone.remove(); 
-                
-                let badanRumusan = document.getElementById('badanJadualRumusan');
-                if (badanRumusan && tempId) {
-                    let mappingSasaran = {
-                        'orp': 'orpBakiAmount',
-                        'baki': 'orpBakiAmount',
-                        'otBiasa': 'otAmount',
-                        'rehatKurang': 'rhAmount',
-                        'rehatLebih': 'rhMoreAmount',
-                        'sec18A': 'amount18A',
-                        'otRehat': 'otRHAmount',
-                        'kelepasan': 'phAmount',
-                        'otKelepasan': 'otPHAmount',
-                        'cutiTahunan': 'annualLeaveAmount',
-                        'cutiSakit': 'sickLeaveAmount',
-                        'notis': ['resUniMonthAmount', 'resUni18AAmount'],
-                        'faedah': 'tbbAmount',
-                        'lewat': 'lewatAmount'
-                    };
-
-                    let sasaranId = mappingSasaran[tempId];
-                    if (sasaranId) {
-                        let barisRumusan = badanRumusan.querySelectorAll('tr');
-                        barisRumusan.forEach(tr => {
-                            let select = tr.querySelector('select');
-                            if (select) {
-                                let nilaiSelect = select.value;
-                                if (Array.isArray(sasaranId) ? sasaranId.includes(nilaiSelect) : nilaiSelect === sasaranId) {
-                                    tr.remove(); 
-                                }
-                            }
-                        });
-                        if (typeof kiraJumlahKeseluruhanRumusan === 'function') {
-                            kiraJumlahKeseluruhanRumusan(); 
-                        }
-                    }
-                }
-
-                let kadTinggal = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
-                if (kadTinggal.length === 0) {
-                    if (rumusanCard) { rumusanCard.style.display = "none"; }
-                } else {
-                    setTimeout(() => window.semakDanTukarElaun(), 50);
-                }
-            };
-            clone.appendChild(closeBtn);
-        }
-
-        let allElementsWithId = clone.querySelectorAll('[id]');
-        allElementsWithId.forEach(el => {
-            el.setAttribute('data-original-id', el.id);
-            if (templateId !== 'maklumatGaji') {
-                el.id = el.id + uniqueSuffix;
-            }
-            if(el.tagName === 'INPUT' && el.type !== 'button') el.value = "";
-            if(el.tagName === 'STRONG' || el.tagName === 'SPAN') {
-                if(el.innerText.includes('RM')) el.innerText = 'RM 0.00';
-                else if(el.innerText !== 'Kadar Sehari' && el.innerText !== 'Bayaran' && el.innerText !== 'Hari Bekerja') el.innerText = '-';
-            }
+        let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+        semuaKadAktif.forEach(kad => {
+            kad.classList.add('sementara-sembunyi');
+            kad.style.display = 'none';
         });
-        
-        if (templateId !== 'maklumatGaji') {
-            let allElementsWithName = clone.querySelectorAll('[name]');
-            allElementsWithName.forEach(el => {
-                el.setAttribute('name', el.getAttribute('name') + uniqueSuffix);
-            });
+        if (rumusanCard) rumusanCard.style.display = "none";
+        if (warningBox) warningBox.style.display = "none";
+    } else {
+        if (warningBox) warningBox.style.display = "block";
+        let existingMg = document.getElementById('active-maklumatGaji');
+        if (existingMg) {
+            existingMg.remove();
+            document.querySelectorAll('.sementara-sembunyi').forEach(kad => kad.remove());
+            if (typeof resetRumusan === 'function') resetRumusan();
+            if (typeof senaraiElaunGlobal !== 'undefined') senaraiElaunGlobal = [];
+            if (rumusanCard) rumusanCard.style.display = "none";
+            setTimeout(() => { if (typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
         }
+    }
 
-        if (templateId !== 'maklumatGaji') {
-            let currentBasic = "";
-            let currentAllowance = "";
+    // 4. Proses Klon Kad
+    let templateCard = document.getElementById('card-' + templateId);
+    if (!templateCard) {
+        alert('Ralat: Templat Kalkulator tidak ditemui dalam HTML!');
+        return;
+    }
+    
+    let clone = templateCard.cloneNode(true);
+    clone.classList.remove('hidden-template');
+    clone.style.display = 'block'; // Jaminan kalkulator pasti muncul
+    
+    let uniqueSuffix = '_' + Math.random().toString(36).substr(2, 9);
+    
+    if (templateId === 'maklumatGaji') {
+        clone.id = 'active-maklumatGaji';
+        clone.style.position = "relative";
+    } else {
+        clone.id = clone.id + uniqueSuffix;
+        clone.style.position = "relative";
+        
+        // Butang Tutup
+        let closeBtn = document.createElement('button');
+        closeBtn.className = "close-card-btn";
+        closeBtn.innerHTML = "X";
+        closeBtn.onclick = function() { 
+            let tempId = clone.getAttribute('data-template-id');
+            clone.remove(); 
             
+            let badanRumusan = document.getElementById('badanJadualRumusan');
+            if (badanRumusan && tempId) {
+                let mappingSasaran = {
+                    'orp': 'orpBakiAmount', 'baki': 'orpBakiAmount', 'otBiasa': 'otAmount',
+                    'rehatKurang': 'rhAmount', 'rehatLebih': 'rhMoreAmount', 'sec18A': 'amount18A',
+                    'otRehat': 'otRHAmount', 'kelepasan': 'phAmount', 'otKelepasan': 'otPHAmount',
+                    'cutiTahunan': 'annualLeaveAmount', 'cutiSakit': 'sickLeaveAmount',
+                    'notis': ['resUniMonthAmount', 'resUni18AAmount'], 'faedah': 'tbbAmount', 'lewat': 'lewatAmount'
+                };
+                let sasaranId = mappingSasaran[tempId];
+                if (sasaranId) {
+                    let barisRumusan = badanRumusan.querySelectorAll('tr');
+                    barisRumusan.forEach(tr => {
+                        let select = tr.querySelector('select');
+                        if (select) {
+                            let nilaiSelect = select.value;
+                            if (Array.isArray(sasaranId) ? sasaranId.includes(nilaiSelect) : nilaiSelect === sasaranId) {
+                                tr.remove(); 
+                            }
+                        }
+                    });
+                    if (typeof kiraJumlahKeseluruhanRumusan === 'function') kiraJumlahKeseluruhanRumusan(); 
+                }
+            }
+
+            let kadTinggal = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
+            if (kadTinggal.length === 0 && rumusanCard) rumusanCard.style.display = "none";
+            else setTimeout(() => { if(typeof window.semakDanTukarElaun === 'function') window.semakDanTukarElaun(); }, 50);
+        };
+        clone.appendChild(closeBtn);
+    }
+
+    // 5. Ubah ID Elemen Dalaman
+    let allElementsWithId = clone.querySelectorAll('[id]');
+    allElementsWithId.forEach(el => {
+        el.setAttribute('data-original-id', el.id);
+        if (templateId !== 'maklumatGaji') el.id = el.id + uniqueSuffix;
+        if(el.tagName === 'INPUT' && el.type !== 'button') el.value = "";
+        if(el.tagName === 'STRONG' || el.tagName === 'SPAN') {
+            if(el.innerText.includes('RM')) el.innerText = 'RM 0.00';
+            else if(el.innerText !== 'Kadar Sehari' && el.innerText !== 'Bayaran' && el.innerText !== 'Hari Bekerja') el.innerText = '-';
+        }
+    });
+    
+    if (templateId !== 'maklumatGaji') {
+        clone.querySelectorAll('[name]').forEach(el => el.setAttribute('name', el.getAttribute('name') + uniqueSuffix));
+    }
+
+    // 6. Autofill Gaji (Diasingkan supaya tidak ganggu paparan jika ralat)
+    if (templateId !== 'maklumatGaji') {
+        try {
+            let currentBasic = ""; let currentAllowance = "";
             function extractSalaryFromCard(kad) {
                 for (let mapKey of Object.keys(salaryMap)) {
                     let sourceBasic = kad.querySelector(`[data-original-id="${mapKey}"]`);
                     if (sourceBasic && sourceBasic.value) {
                         let semakNilai = evaluateSmartMath(sourceBasic.value);
                         if (semakNilai > 0) {
-                            let allowVal = "";
                             let sourceAllowId = salaryMap[mapKey][0];
                             let sourceAllow = kad.querySelector(`[data-original-id="${sourceAllowId}"]`);
-                            if (sourceAllow) allowVal = sourceAllow.value;
-                            return { basic: sourceBasic.value, allow: allowVal };
+                            return { basic: sourceBasic.value, allow: sourceAllow ? sourceAllow.value : "" };
                         }
                     }
                 }
@@ -2317,14 +2302,12 @@ window.tambahKalkulator = function(templateId) {
             if (currentBasic !== "") {
                 for (let targetKey of Object.keys(salaryMap)) {
                     let targetBasic = clone.querySelector(`[data-original-id="${targetKey}"]`);
-                    let targetAllowId = salaryMap[targetKey][0];
-                    let targetAllow = clone.querySelector(`[data-original-id="${targetAllowId}"]`);
-                    let targetTotalId = salaryMap[targetKey][1];
-                    let targetTotal = clone.querySelector(`[data-original-id="${targetTotalId}"]`);
+                    let targetAllow = clone.querySelector(`[data-original-id="${salaryMap[targetKey][0]}"]`);
+                    let targetTotal = clone.querySelector(`[data-original-id="${salaryMap[targetKey][1]}"]`);
 
                     if (targetBasic) {
                         targetBasic.value = currentBasic;
-                        if (targetAllow && currentAllowance !== "") { targetAllow.value = currentAllowance; }
+                        if (targetAllow && currentAllowance !== "") targetAllow.value = currentAllowance;
                         if (targetTotal) {
                             let calcBasic = evaluateSmartMath(currentBasic);
                             let calcAllow = currentAllowance !== "" ? evaluateSmartMath(currentAllowance) : 0;
@@ -2333,34 +2316,37 @@ window.tambahKalkulator = function(templateId) {
                     }
                 }
             }
-        }
-
-        let allButtons = clone.querySelectorAll('button');
-        allButtons.forEach(btn => {
-            let oriClick = btn.getAttribute('onclick');
-            if (oriClick && !oriClick.includes('clone.remove')) {
-                let funcName = oriClick.replace(/\(.*?\)/, '').trim(); 
-                btn.removeAttribute('onclick');
-                btn.setAttribute('data-action-func', oriClick);
-                btn.addEventListener('click', function(e) {
-                    activeCardContext = clone; 
-                    try { if (typeof window[funcName] === 'function') window[funcName](e); } finally { activeCardContext = null; }
-                });
-            }
-        });
-
-        if (rumusanCard) grid.insertBefore(clone, rumusanCard); else grid.appendChild(clone);
-        
-        if (templateId !== 'maklumatGaji' && rumusanCard) { 
-            let kadAktifBiasa = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
-            if (kadAktifBiasa.length > 0) rumusanCard.style.display = "block"; 
-        }
-
-        setTimeout(() => clone.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
-        
-    } catch (error) {
-        console.error("Ralat dalam tambahKalkulator:", error);
+        } catch(err) { console.warn("Abaikan: Gagal autofill gaji"); }
     }
+
+    // 7. Re-bind Butang
+    let allButtons = clone.querySelectorAll('button');
+    allButtons.forEach(btn => {
+        let oriClick = btn.getAttribute('onclick');
+        if (oriClick && !oriClick.includes('clone.remove')) {
+            let funcName = oriClick.replace(/\(.*?\)/, '').trim(); 
+            btn.removeAttribute('onclick');
+            btn.setAttribute('data-action-func', oriClick);
+            btn.addEventListener('click', function(e) {
+                activeCardContext = clone; 
+                try { if (typeof window[funcName] === 'function') window[funcName](e); } finally { activeCardContext = null; }
+            });
+        }
+    });
+
+    // 8. Masukkan ke dalam DOM & Tunjuk
+    if (rumusanCard) {
+        grid.insertBefore(clone, rumusanCard);
+    } else {
+        grid.appendChild(clone);
+    }
+    
+    if (templateId !== 'maklumatGaji' && rumusanCard) { 
+        let kadAktifBiasa = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
+        if (kadAktifBiasa.length > 0) rumusanCard.style.display = "block"; 
+    }
+
+    setTimeout(() => clone.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
 };
 
 // =====================================================
