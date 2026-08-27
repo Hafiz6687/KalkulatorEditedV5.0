@@ -2620,14 +2620,44 @@ window.tambahKalkulator = function(templateId) {
     }
 };
 
+// =========================================================
+// KEMAS KINI: PENYUSUNAN FLYOUT MENU (CEGAH TERPOTONG)
+// =========================================================
+
+// Fungsi baru untuk mengira dan melaraskan posisi flyout secara automatik
+function susunPosisiFlyout(flyout) {
+    // 1. Reset posisi asal setiap kali dibuka
+    flyout.style.top = '0px'; 
+    flyout.style.bottom = 'auto';
+    
+    // 2. Dapatkan saiz dan posisi kotak menu tersebut
+    let rect = flyout.getBoundingClientRect();
+    
+    // 3. Semak jika bahagian bawah flyout melepasi ketinggian skrin (viewport)
+    if (rect.bottom > window.innerHeight) {
+        // Kira baki ruang yang terkeluar, tambah 20px sebagai jarak selamat (padding bawah)
+        let beza = rect.bottom - window.innerHeight + 20; 
+        
+        // Tolak posisi menu ke atas berdasarkan jumlah yang terkeluar
+        flyout.style.top = `-${beza}px`; 
+    }
+}
+
 function toggleFlyout18A(e) {
     e.preventDefault();
     e.stopPropagation();
     urusPertukaranMenu('18A', function() {
         let flyoutAkta = document.getElementById('flyoutMenuAktaKerja');
         if (flyoutAkta) flyoutAkta.style.display = 'none';
+        
         let flyout = document.getElementById('flyoutMenu18ACustom');
-        if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+        if (flyout) {
+            flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+            // Panggil fungsi susun hanya jika menu sedang dipaparkan
+            if (flyout.style.display === 'block') {
+                susunPosisiFlyout(flyout);
+            }
+        }
     });
 }
 
@@ -2637,8 +2667,15 @@ function toggleFlyoutAktaKerja(e) {
     urusPertukaranMenu('AKTA', function() {
         let flyout18A = document.getElementById('flyoutMenu18ACustom');
         if (flyout18A) flyout18A.style.display = 'none';
+        
         let flyout = document.getElementById('flyoutMenuAktaKerja');
-        if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+        if (flyout) {
+            flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+            // Panggil fungsi susun hanya jika menu sedang dipaparkan
+            if (flyout.style.display === 'block') {
+                susunPosisiFlyout(flyout);
+            }
+        }
     });
 }
 
