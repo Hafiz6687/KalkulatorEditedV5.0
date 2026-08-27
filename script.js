@@ -2610,6 +2610,11 @@ function fungsiBaruRumusan(e) {
 function toggleFlyout18A(e) {
     e.preventDefault();
     e.stopPropagation();
+    
+    // PENAMBAHBAIKAN: Sembunyikan flyout Akta Kerja jika ia sedang terbuka
+    let flyoutAkta = document.getElementById('flyoutMenuAktaKerja');
+    if (flyoutAkta) flyoutAkta.style.display = 'none';
+
     let flyout = document.getElementById('flyoutMenu18ACustom');
     if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
 }
@@ -2690,6 +2695,7 @@ window.tambahKalkulator18ACustom = function(templateId) {
         }
     }, 50);
 };
+
 // =========================================================
 // ENJIN MENU FLYOUT AKTA KERJA (BAHAGIAN XII & XIIA) - ISOLATED
 // =========================================================
@@ -2698,6 +2704,11 @@ window.tambahKalkulator18ACustom = function(templateId) {
 function toggleFlyoutAktaKerja(e) {
     e.preventDefault();
     e.stopPropagation();
+    
+    // PENAMBAHBAIKAN: Sembunyikan flyout Seksyen 18A jika ia sedang terbuka
+    let flyout18A = document.getElementById('flyoutMenu18ACustom');
+    if (flyout18A) flyout18A.style.display = 'none';
+
     let flyout = document.getElementById('flyoutMenuAktaKerja');
     if (flyout) {
         flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
