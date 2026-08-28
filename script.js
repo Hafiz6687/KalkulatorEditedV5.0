@@ -851,7 +851,23 @@ function janaLaporanPenuh() {
 function janaPenyataGaji() { 
     let takLengkap = semakKalkulatorTakLengkap();
     if (takLengkap) {
-        alert("Kalkulator (" + takLengkap + ") tidak lengkap. Sila lengkapkan atau padam kalkulator tersebut.");
+        // GANTIKAN ALERT KEPADA POP-UP CUSTOM
+        let existingTakLengkap = document.getElementById('modalTakLengkap');
+        if (existingTakLengkap) existingTakLengkap.remove();
+
+        let amaranTakLengkapHtml = `
+        <div id="modalTakLengkap" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+            <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; border-top: 6px solid #dc3545;">
+                <div style="font-size: 45px; margin-bottom: 10px; line-height: 1;">⚠️</div>
+                <h3 style="margin-top: 0; color: #dc3545; font-size: 20px; font-weight: 800;">Tidak Lengkap</h3>
+                <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                    Kalkulator <b>(${takLengkap})</b> tidak lengkap.<br>Sila lengkapkan pengiraan atau padam kalkulator tersebut terlebih dahulu.
+                </p>
+                <button onclick="document.getElementById('modalTakLengkap').remove()" style="background: #dc3545; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; width: 100%; transition: 0.2s; box-shadow: 0 4px 6px rgba(220,53,69,0.2);">OK, SAYA FAHAM</button>
+            </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', amaranTakLengkapHtml);
         return;
     }
 
@@ -870,17 +886,41 @@ function janaPenyataGaji() {
     });
 
     if (!orpCardLengkap) {
-        alert("Peringatan: Sila lengkapkan Kalkulator Kadar Upah Biasa (ORP) terlebih dahulu untuk menjana Penyata Gaji.");
+        // GANTIKAN ALERT ORP KEPADA POP-UP CUSTOM
+        let existingModalORP = document.getElementById('modalAmaranORP');
+        if (existingModalORP) existingModalORP.remove();
+
+        let amaranORPHtml = `
+        <div id="modalAmaranORP" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+            <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; border-top: 6px solid #f39c12;">
+                <div style="font-size: 45px; margin-bottom: 10px; line-height: 1;">⚠️</div>
+                <h3 style="margin-top: 0; color: #1f4e79; font-size: 20px; font-weight: 800;">Peringatan</h3>
+                <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                    Sila lengkapkan Kalkulator <b>Kadar Upah Biasa (ORP)</b> terlebih dahulu untuk menjana Penyata Gaji.
+                </p>
+                <button id="btnOKModalORP" style="background: #1f4e79; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; width: 100%; transition: 0.2s; box-shadow: 0 4px 6px rgba(31,78,121,0.2);">OK, SAYA FAHAM</button>
+            </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', amaranORPHtml);
+
+        // FUNGSI ASAL DIKEKALKAN SEPENUHNYA
         if (!orpCardWujud) {
             if (typeof window.tambahKalkulator === 'function') {
                 window.tambahKalkulator('orp');
                 let cards = document.querySelectorAll('.calculator-card:not(.hidden-template)');
                 orpCardWujud = cards[cards.length - 1];
             }
-        } else {
-            orpCardWujud.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        } 
         
+        // Letakkan arahan scroll ke dalam butang OK supaya ia bertindak persis seperti asal (scroll selepas pengguna tutup amaran)
+        document.getElementById('btnOKModalORP').onclick = function() {
+            document.getElementById('modalAmaranORP').remove();
+            if (orpCardWujud) {
+                orpCardWujud.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        };
+
         if (orpCardWujud) {
             let kiraBtn = orpCardWujud.querySelector('button[data-action-func*="calculateORP"]');
             if (!kiraBtn) kiraBtn = orpCardWujud.querySelector('button[onclick*="calculateORP"]');
@@ -900,6 +940,7 @@ function janaPenyataGaji() {
         }
         return;
     }
+    
     paparModalLaporan('penyata'); 
 }
 
