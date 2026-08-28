@@ -906,7 +906,7 @@ function janaPenyataGaji() {
             window.tangguhTourElaunSeketika = true; // TAHAN TOUR DARI MUNCUL DAHULU
             if (typeof window.tambahKalkulator === 'function') {
                 window.tambahKalkulator('orp');
-                let cards = document.querySelectorAll('.calculator-card:not(.hidden-template)');
+                let cards = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
                 orpCardWujud = cards[cards.length - 1];
             }
         } 
@@ -2483,7 +2483,7 @@ function transformAllowanceField(allowInput) {
     
     if (senaraiElaunGlobal.length > 0) { updateGlobalElaunSum(container); }
 
-    // TAMBAH SEMAKAN: Jangan popup tour jika ia sedang 'ditahan'
+    // SEMAKAN PENTING: Tahan Popup Tour jika diarahkan
     if (!elaunTourDitunjuk && !window.tangguhTourElaunSeketika) {
         elaunTourDitunjuk = true;
         setTimeout(() => tunjukTourElaun(container), 400);
