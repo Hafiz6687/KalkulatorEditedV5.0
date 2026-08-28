@@ -839,7 +839,54 @@ function semakKalkulatorTakLengkap() {
     return null;
 }
 
+// =========================================================
+// KEMAS KINI: POP-UP AMARAN TIADA AKTIVITI PENGIRAAN
+// =========================================================
+
+// 1. Fungsi Bantuan untuk menyemak ketiadaan aktiviti pengiraan (Akta / 18A / Rumusan)
+function semakAdaPengiraanAtauRumusan() {
+    let ada = false;
+    // Semak jika ada kad kalkulator terbuka (selain Maklumat Gaji & Rumusan)
+    let kadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(#active-maklumatGaji):not(.rumusan-card)');
+    if (kadAktif.length > 0) ada = true;
+    
+    // Semak jika ada data diisi secara manual di Jadual Rumusan
+    let rumusanTbody = document.getElementById('badanJadualRumusan');
+    if (rumusanTbody && rumusanTbody.children.length > 0) ada = true;
+    
+    return ada;
+}
+
+// 2. Fungsi untuk memaparkan Pop-Up Amaran (Sama tema dengan "Simpan Draf")
+function paparAmaranTiadaData() {
+    let existingModal = document.getElementById('modalAmaranTiadaData');
+    if(existingModal) existingModal.remove();
+
+    let boxHtml = `
+    <div id="modalAmaranTiadaData" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; border-top: 6px solid #d9534f;">
+            <div style="font-size: 45px; margin-bottom: 10px; line-height: 1;">⚠️</div>
+            <h3 style="margin-top: 0; color: #1f4e79; font-size: 20px; font-weight: 800;">Tiada Aktiviti Pengiraan</h3>
+            <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                Anda belum membuat sebarang aktiviti pengiraan.<br><br>Sila buat sekurang-kurangnya satu pengiraan <b>(Kalkulator Akta Kerja / Seksyen 18A)</b> atau isi Jadual Rumusan terlebih dahulu sebelum menjana laporan atau penyata.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="document.getElementById('modalAmaranTiadaData').remove()" style="background: #1f4e79; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(31,78,121,0.2);">OK, Saya Faham</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', boxHtml);
+}
+
+// 3. Gantian Fungsi janaLaporanPenuh Sedia Ada
 function janaLaporanPenuh() { 
+    // PINTASAN BARU: Semak jika tiada data langsung
+    if (!semakAdaPengiraanAtauRumusan()) {
+        paparAmaranTiadaData();
+        return; // Hentikan proses jika tiada data
+    }
+
     let takLengkap = semakKalkulatorTakLengkap();
     if (takLengkap) {
         alert("Kalkulator (" + takLengkap + ") tidak lengkap. Sila lengkapkan atau padam kalkulator tersebut.");
@@ -848,12 +895,67 @@ function janaLaporanPenuh() {
     paparModalLaporan('penuh'); 
 }
 
+// 4. Gantian Fungsi janaPenyataGaji Sedia Ada
 function janaPenyataGaji() { 
+    // PINTASAN BARU: Semak jika tiada data langsung
+    if (!semakAdaPengiraanAtauRumusan()) {
+        paparAmaranTiadaData();
+        return; // Hentikan proses jika tiada data
+    }
+
     let takLengkap = semakKalkulatorTakLengkap();
     if (takLengkap) {
         alert("Kalkulator (" + takLengkap + ") tidak lengkap. Sila lengkapkan atau padam kalkulator tersebut.");
         return;
     }
+
+    let orpCardLengkap = false;
+    let orpCardWujud = null;
+    let semuaKadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template)');
+    
+    semuaKadAktif.forEach(kad => {
+        let orpData = kad.querySelector('[id="orpData"], [data-original-id="orpData"]');
+        if (orpData) {
+            orpCardWujud = kad;
+            if (window.getComputedStyle(orpData).display !== "none") {
+                orpCardLengkap = true;
+            }
+        }
+    });
+
+    if (!orpCardLengkap) {
+        alert("Peringatan: Sila lengkapkan Kalkulator Kadar Upah Biasa (ORP) terlebih dahulu untuk menjana Penyata Gaji.");
+        if (!orpCardWujud) {
+            if (typeof window.tambahKalkulator === 'function') {
+                window.tambahKalkulator('orp');
+                let cards = document.querySelectorAll('.calculator-card:not(.hidden-template)');
+                orpCardWujud = cards[cards.length - 1];
+            }
+        } else {
+            orpCardWujud.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        if (orpCardWujud) {
+            let kiraBtn = orpCardWujud.querySelector('button[data-action-func*="calculateORP"]');
+            if (!kiraBtn) kiraBtn = orpCardWujud.querySelector('button[onclick*="calculateORP"]');
+            
+            if (kiraBtn) {
+                const autoPopup = function() {
+                    setTimeout(() => {
+                        let dataEl = orpCardWujud.querySelector('[id="orpData"], [data-original-id="orpData"]');
+                        if (dataEl && window.getComputedStyle(dataEl).display !== "none") {
+                            paparModalLaporan('penyata');
+                            kiraBtn.removeEventListener('click', autoPopup); 
+                        }
+                    }, 500);
+                };
+                kiraBtn.addEventListener('click', autoPopup);
+            }
+        }
+        return;
+    }
+    paparModalLaporan('penyata'); 
+}
 
     let orpCardLengkap = false;
     let orpCardWujud = null;
