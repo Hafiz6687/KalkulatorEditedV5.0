@@ -843,21 +843,19 @@ function semakKalkulatorTakLengkap() {
 // KEMAS KINI: POP-UP AMARAN TIADA AKTIVITI PENGIRAAN
 // =========================================================
 
-// 1. Fungsi Bantuan untuk menyemak ketiadaan aktiviti pengiraan (Akta / 18A / Rumusan)
+// 1. Fungsi Bantuan untuk menyemak ketiadaan aktiviti pengiraan
 function semakAdaPengiraanAtauRumusan() {
     let ada = false;
-    // Semak jika ada kad kalkulator terbuka (selain Maklumat Gaji & Rumusan)
     let kadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(#active-maklumatGaji):not(.rumusan-card)');
     if (kadAktif.length > 0) ada = true;
     
-    // Semak jika ada data diisi secara manual di Jadual Rumusan
     let rumusanTbody = document.getElementById('badanJadualRumusan');
     if (rumusanTbody && rumusanTbody.children.length > 0) ada = true;
     
     return ada;
 }
 
-// 2. Fungsi untuk memaparkan Pop-Up Amaran (Sama tema dengan "Simpan Draf")
+// 2. Fungsi untuk memaparkan Pop-Up Amaran
 function paparAmaranTiadaData() {
     let existingModal = document.getElementById('modalAmaranTiadaData');
     if(existingModal) existingModal.remove();
@@ -879,12 +877,11 @@ function paparAmaranTiadaData() {
     document.body.insertAdjacentHTML('beforeend', boxHtml);
 }
 
-// 3. Gantian Fungsi janaLaporanPenuh Sedia Ada
+// 3. Gantian Fungsi janaLaporanPenuh
 function janaLaporanPenuh() { 
-    // PINTASAN BARU: Semak jika tiada data langsung
     if (!semakAdaPengiraanAtauRumusan()) {
         paparAmaranTiadaData();
-        return; // Hentikan proses jika tiada data
+        return; 
     }
 
     let takLengkap = semakKalkulatorTakLengkap();
@@ -895,12 +892,11 @@ function janaLaporanPenuh() {
     paparModalLaporan('penuh'); 
 }
 
-// 4. Gantian Fungsi janaPenyataGaji Sedia Ada
+// 4. Gantian Fungsi janaPenyataGaji
 function janaPenyataGaji() { 
-    // PINTASAN BARU: Semak jika tiada data langsung
     if (!semakAdaPengiraanAtauRumusan()) {
         paparAmaranTiadaData();
-        return; // Hentikan proses jika tiada data
+        return; 
     }
 
     let takLengkap = semakKalkulatorTakLengkap();
