@@ -2643,6 +2643,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function fungsiBaruRumusan(e) {
     if (e) e.preventDefault();
 }
+
 // =========================================================
 // 9. ENJIN KHAS SEKSYEN 18A & FLYOUT MENU
 // =========================================================
@@ -2661,14 +2662,41 @@ window.tambahKalkulator = function(templateId) {
     }
 };
 
+// TAMBAHAN BARU: Fungsi Pintar untuk elak Flyout terpotong
+function autoBetulkanPosisiFlyout(flyoutId) {
+    let flyout = document.getElementById(flyoutId);
+    if (!flyout) return;
+    
+    // Reset style ke asal untuk kiraan tepat
+    flyout.style.top = '0px';
+    flyout.style.bottom = 'auto';
+    
+    let rect = flyout.getBoundingClientRect();
+    let windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    
+    // Jika bahagian bawah flyout terkeluar / terpotong dari pandangan skrin
+    if (rect.bottom > windowHeight) {
+        let lebihan = rect.bottom - windowHeight;
+        // Tolak flyout ke atas berserta margin lega (+20px)
+        flyout.style.top = '-' + (lebihan + 20) + 'px';
+    }
+}
+
 function toggleFlyout18A(e) {
     e.preventDefault();
     e.stopPropagation();
     urusPertukaranMenu('18A', function() {
         let flyoutAkta = document.getElementById('flyoutMenuAktaKerja');
         if (flyoutAkta) flyoutAkta.style.display = 'none';
+        
         let flyout = document.getElementById('flyoutMenu18ACustom');
-        if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+        if (flyout) {
+            flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+            // Jalankan pelarasan auto selepas flyout dibuka
+            if (flyout.style.display === 'block') {
+                setTimeout(() => autoBetulkanPosisiFlyout('flyoutMenu18ACustom'), 10);
+            }
+        }
     });
 }
 
@@ -2678,8 +2706,15 @@ function toggleFlyoutAktaKerja(e) {
     urusPertukaranMenu('AKTA', function() {
         let flyout18A = document.getElementById('flyoutMenu18ACustom');
         if (flyout18A) flyout18A.style.display = 'none';
+        
         let flyout = document.getElementById('flyoutMenuAktaKerja');
-        if (flyout) flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+        if (flyout) {
+            flyout.style.display = flyout.style.display === 'none' ? 'block' : 'none';
+            // Jalankan pelarasan auto selepas flyout dibuka
+            if (flyout.style.display === 'block') {
+                setTimeout(() => autoBetulkanPosisiFlyout('flyoutMenuAktaKerja'), 10);
+            }
+        }
     });
 }
 
@@ -2738,7 +2773,7 @@ window.tambahKalkulator18ACustom = function(templateId) {
                     let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : 26; 
                     
                     if (templateId === 'orp') calculateORP(e, hariBulan);
-                    else if (templateId === 'baki') calculateBakiUpah(e); // DITAMBAH UNTUK MOD 18A
+                    else if (templateId === 'baki') calculateBakiUpah(e);
                     else if (templateId === 'otBiasa') calculateOTBiasa(e, hariBulan);
                     else if (templateId === 'lewat') calculateLewat(e, hariBulan);
                     else if (templateId === 'otRehat') calculateOTRH(e, hariBulan);
@@ -2748,7 +2783,7 @@ window.tambahKalkulator18ACustom = function(templateId) {
                     else if (templateId === 'kelepasan') calculatePH(e, hariBulan);
                     else if (templateId === 'cutiTahunan') calculateCutiTahunan(e, hariBulan);
                     else if (templateId === 'cutiSakit') calculateCutiSakit(e, hariBulan);
-                    else if (templateId === 'sec18A') calculate18ANew(e); // DITAMBAH UNTUK MOD 18A
+                    else if (templateId === 'sec18A') calculate18ANew(e);
                 } finally {
                     activeCardContext = tempContext;
                 }
@@ -2756,6 +2791,7 @@ window.tambahKalkulator18ACustom = function(templateId) {
         }
     }, 50);
 };
+
 // =========================================================
 // 10. ENJIN DRAF & KAWALAN PERTUKARAN MENU (NEW)
 // =========================================================
