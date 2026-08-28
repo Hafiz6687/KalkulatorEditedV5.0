@@ -2483,7 +2483,8 @@ function transformAllowanceField(allowInput) {
     
     if (senaraiElaunGlobal.length > 0) { updateGlobalElaunSum(container); }
 
-    if (!elaunTourDitunjuk) {
+    // TAMBAH SEMAKAN: Jangan popup tour jika ia sedang 'ditahan'
+    if (!elaunTourDitunjuk && !window.tangguhTourElaunSeketika) {
         elaunTourDitunjuk = true;
         setTimeout(() => tunjukTourElaun(container), 400);
     }
