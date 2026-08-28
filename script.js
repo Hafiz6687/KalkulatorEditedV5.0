@@ -851,7 +851,6 @@ function janaLaporanPenuh() {
 function janaPenyataGaji() { 
     let takLengkap = semakKalkulatorTakLengkap();
     if (takLengkap) {
-        // GANTIKAN ALERT KEPADA POP-UP CUSTOM
         let existingTakLengkap = document.getElementById('modalTakLengkap');
         if (existingTakLengkap) existingTakLengkap.remove();
 
@@ -886,7 +885,6 @@ function janaPenyataGaji() {
     });
 
     if (!orpCardLengkap) {
-        // GANTIKAN ALERT ORP KEPADA POP-UP CUSTOM
         let existingModalORP = document.getElementById('modalAmaranORP');
         if (existingModalORP) existingModalORP.remove();
 
@@ -904,8 +902,8 @@ function janaPenyataGaji() {
         `;
         document.body.insertAdjacentHTML('beforeend', amaranORPHtml);
 
-        // FUNGSI ASAL DIKEKALKAN SEPENUHNYA
         if (!orpCardWujud) {
+            window.tangguhTourElaunSeketika = true; // TAHAN TOUR DARI MUNCUL DAHULU
             if (typeof window.tambahKalkulator === 'function') {
                 window.tambahKalkulator('orp');
                 let cards = document.querySelectorAll('.calculator-card:not(.hidden-template)');
@@ -913,11 +911,22 @@ function janaPenyataGaji() {
             }
         } 
         
-        // Letakkan arahan scroll ke dalam butang OK supaya ia bertindak persis seperti asal (scroll selepas pengguna tutup amaran)
         document.getElementById('btnOKModalORP').onclick = function() {
             document.getElementById('modalAmaranORP').remove();
             if (orpCardWujud) {
                 orpCardWujud.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // LEPASKAN TOUR SELEPAS PENGGUNA KLIK 'OK'
+                if (window.tangguhTourElaunSeketika) {
+                    window.tangguhTourElaunSeketika = false;
+                    if (!elaunTourDitunjuk) {
+                        elaunTourDitunjuk = true;
+                        let containerElaun = orpCardWujud.querySelector('.dynamic-allowance-wrapper');
+                        if (containerElaun) {
+                            setTimeout(() => tunjukTourElaun(containerElaun), 500);
+                        }
+                    }
+                }
             }
         };
 
