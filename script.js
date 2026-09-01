@@ -1096,7 +1096,23 @@ function paparModalLaporan(jenis) {
     
     if(existingModal) {
         let isPenyata = existingModal.querySelector('#inputTempohUpah') !== null;
+        
+        let getOldVal = (id) => existingModal.querySelector('#'+id) ? existingModal.querySelector('#'+id).value : '';
+        if (existingModal.querySelector('#inputNamaMajikan')) window.globalNamaMajikan = getOldVal('inputNamaMajikan');
+        if (existingModal.querySelector('#inputNoDaftarMajikan')) window.globalNoDaftarMajikan = getOldVal('inputNoDaftarMajikan');
+        if (existingModal.querySelector('#inputTempohUpah')) window.globalTempohUpah = getOldVal('inputTempohUpah');
+        if (existingModal.querySelector('#inputNamaLaporan')) window.globalNamaPekerja = getOldVal('inputNamaLaporan');
+        if (existingModal.querySelector('#inputICLaporan')) window.globalIcPekerja = getOldVal('inputICLaporan');
+        if (existingModal.querySelector('#inputNoPekerjaLaporan')) window.globalNoPekerja = getOldVal('inputNoPekerjaLaporan');
+
         if ((jenis === 'penyata' && isPenyata) || (jenis === 'penuh' && !isPenyata)) {
+            if(existingModal.querySelector('#inputNamaMajikan') && window.globalNamaMajikan) existingModal.querySelector('#inputNamaMajikan').value = window.globalNamaMajikan;
+            if(existingModal.querySelector('#inputNoDaftarMajikan') && window.globalNoDaftarMajikan) existingModal.querySelector('#inputNoDaftarMajikan').value = window.globalNoDaftarMajikan;
+            if(existingModal.querySelector('#inputTempohUpah') && window.globalTempohUpah) existingModal.querySelector('#inputTempohUpah').value = window.globalTempohUpah;
+            if(existingModal.querySelector('#inputNamaLaporan') && window.globalNamaPekerja) existingModal.querySelector('#inputNamaLaporan').value = window.globalNamaPekerja;
+            if(existingModal.querySelector('#inputICLaporan') && window.globalIcPekerja) existingModal.querySelector('#inputICLaporan').value = window.globalIcPekerja;
+            if(existingModal.querySelector('#inputNoPekerjaLaporan') && window.globalNoPekerja) existingModal.querySelector('#inputNoPekerjaLaporan').value = window.globalNoPekerja;
+
             existingModal.style.display = 'flex';
             if (jenis === 'penyata') {
                 autoKiraPotonganBerkanun();
@@ -1109,8 +1125,14 @@ function paparModalLaporan(jenis) {
         }
     }
     
+    let vNamaMajikan = window.globalNamaMajikan || "";
+    let vNoDaftar = window.globalNoDaftarMajikan || "";
+    let vTempoh = window.globalTempohUpah || "";
+    let vNamaPekerja = window.globalNamaPekerja || "";
+    let vIc = window.globalIcPekerja || "";
+    let vNoPekerja = window.globalNoPekerja || "";
+    
     if (jenis === 'penyata') {
-        
         let v_ct_layak = "", v_cs_layak = "", v_ch_layak = ""; 
         let v_ct_guna = "", v_cs_guna = "", v_ch_guna = ""; 
         document.querySelectorAll('.calculator-card:not(.hidden-template)').forEach(kad => {
@@ -1123,7 +1145,6 @@ function paparModalLaporan(jenis) {
             if(!v_ch_guna) v_ch_guna = v("hospGuna"); 
         });
 
-        // ENJIN MATEMATIK PINTAR (Baki & Auto Tambah Semasa -> Guna)
         if (!window.autoKiraBakiSvc) {
             window.autoKiraBakiSvc = function() {
                 ['PH', 'AL', 'MC', 'WD'].forEach(k => {
@@ -1209,19 +1230,20 @@ function paparModalLaporan(jenis) {
             <div id="modalPenyataWhiteBox" style="background: white; position: relative; padding: 25px 30px; border-radius: 10px; width: 90%; max-width: 850px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; border-top: 5px solid #1f4e79;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
                     
+                    <!-- KIRI -->
                     <div>
                         <h3 style="margin-top: 0; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Maklumat Majikan / Syarikat</h3>
                         <div style="margin-bottom: 15px; margin-top: 15px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">Nama Majikan/Syarikat/Organisasi:</label>
-                            <input type="text" id="inputNamaMajikan" placeholder="Contoh: SYARIKAT ABC SDN BHD" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" id="inputNamaMajikan" placeholder="Contoh: SYARIKAT ABC SDN BHD" value="${vNamaMajikan}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
                         </div>
                         <div style="margin-bottom: 15px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">No. Pendaftaran:</label>
-                            <input type="text" id="inputNoDaftarMajikan" placeholder="Contoh: 202301234567" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" id="inputNoDaftarMajikan" placeholder="Contoh: 202301234567" value="${vNoDaftar}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
                         </div>
                         <div style="margin-bottom: 25px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">Tempoh Upah:</label>
-                            <input type="text" id="inputTempohUpah" placeholder="Contoh: Mei 2026 / 1 Mei - 31 Mei 2026" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
+                            <input type="text" id="inputTempohUpah" placeholder="Contoh: Mei 2026 / 1 Mei - 31 Mei 2026" value="${vTempoh}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
                         </div>
 
                         <div id="tourTargetElaunPopup" style="border-radius: 6px; position: relative;">
@@ -1278,26 +1300,23 @@ function paparModalLaporan(jenis) {
                                     </tr>
                                 </tbody>
                             </table>
-                            <div style="font-size: 10px; color: #555; text-align: left; background: #f9f9f9; padding: 8px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px;">
-                                <span style="font-weight: bold; color: #1f4e79;">Petunjuk:</span><br>
-                                <strong>PH</strong> = Hari Kelepasan &nbsp;|&nbsp; <strong>AL</strong> = Cuti Tahunan &nbsp;|&nbsp; <strong>MC</strong> = Cuti Sakit &nbsp;|&nbsp; <strong>WD</strong> = Hospitalisasi
-                            </div>
                         </div>
                     </div>
 
+                    <!-- KANAN -->
                     <div>
                         <h3 style="margin-top: 0; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Maklumat Pekerja</h3>
                         <div style="margin-bottom: 15px; margin-top: 15px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">Nama Pekerja:</label>
-                            <input type="text" id="inputNamaLaporan" placeholder="Contoh: Ahmad Bin Abu" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
+                            <input type="text" id="inputNamaLaporan" placeholder="Contoh: Ahmad Bin Abu" value="${vNamaPekerja}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
                         </div>
                         <div style="margin-bottom: 15px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">No. Kad Pengenalan / No. Passport:</label>
-                            <input type="text" id="inputICLaporan" placeholder="Contoh: 900101-01-1234 atau A1234567" maxlength="14" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatIC(this.value)">
+                            <input type="text" id="inputICLaporan" placeholder="Contoh: 900101-01-1234 atau A1234567" maxlength="14" value="${vIc}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatIC(this.value)">
                         </div>
                         <div style="margin-bottom: 25px;">
                             <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">No. Pekerja:</label>
-                            <input type="text" id="inputNoPekerjaLaporan" placeholder="Contoh: EMP001" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
+                            <input type="text" id="inputNoPekerjaLaporan" placeholder="Contoh: EMP001" value="${vNoPekerja}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
                         </div>
 
                         <h3 style="margin-top: 25px; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Maklumat Potongan</h3>
@@ -1336,32 +1355,42 @@ function paparModalLaporan(jenis) {
                         <div id="containerPotonganModal" style="margin-bottom: 10px;">
                             ${potonganModalHtml}
                         </div>
-
-                        <!-- TAMBAHAN BARU: Rekod Cuti Bulan Semasa -->
-                        <h3 style="margin-top: 25px; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Rekod Cuti Bulan Semasa</h3>
-                        <p style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 15px; background: #e8f0fe; padding: 8px; border-radius: 4px;">Cuti yang dimasukkan di sini akan ditambah secara automatik ke ruangan 'Guna' di Jadual Maklumat Perkhidmatan.</p>
+                    </div>
+                    
+                    <!-- BARIS BAWAH: MENGAMBIL RUANG LAJUR 1 & 2 -->
+                    <div style="grid-column: 1 / -1; margin-top: 5px;">
+                        <h3 style="margin-top: 0; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Rekod Cuti Bulan Semasa</h3>
+                        <p style="font-size: 11px; font-weight: bold; color: #555; margin-bottom: 15px; background: #e8f0fe; padding: 8px; border-radius: 4px;">Cuti yang dimasukkan di sini (PH, AL, MC, WD) akan ditambah secara automatik ke ruangan 'Guna' di Jadual Maklumat Perkhidmatan. ML, PT, dan UPL diletakkan untuk makluman cetakan sahaja.</p>
                         
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Hari Kelepasan (PH)</label>
-                            <input type="number" id="inputPHSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('PH')">
-                            <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Cuti Tahunan (AL)</label>
-                            <input type="number" id="inputALSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('AL')">
-                            <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Cuti Sakit (MC)</label>
-                            <input type="number" id="inputMCSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('MC')">
-                            <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-bottom: 25px; align-items: center;">
-                            <label style="width: 150px; font-size: 13px; font-weight: bold; white-space: nowrap;">Hospitalisasi (WD)</label>
-                            <input type="number" id="inputWDSemasa" placeholder="0" style="width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center;" oninput="tambahCutiSemasa('WD')">
-                            <span style="font-weight: bold; font-size: 13px; color: #333;">hari</span>
-                        </div>
+                        <table style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 15px;">
+                            <thead style="background: #f4f6f9; border-bottom: 1px solid #ccc;">
+                                <tr>
+                                    <th style="padding: 8px; font-size: 13px;">PH</th>
+                                    <th style="padding: 8px; font-size: 13px;">AL</th>
+                                    <th style="padding: 8px; font-size: 13px;">MC</th>
+                                    <th style="padding: 8px; font-size: 13px;">WD</th>
+                                    <th style="padding: 8px; font-size: 13px;">ML</th>
+                                    <th style="padding: 8px; font-size: 13px;">PT</th>
+                                    <th style="padding: 8px; font-size: 13px;">UPL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 8px;"><input type="number" id="inputPHSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" oninput="tambahCutiSemasa('PH')"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputALSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" oninput="tambahCutiSemasa('AL')"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputMCSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" oninput="tambahCutiSemasa('MC')"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputWDSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" oninput="tambahCutiSemasa('WD')"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputMLSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputPTSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="number" id="inputUPLSemasa" placeholder="0" style="width: 100%; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
+                        <div style="font-size: 10px; color: #555; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 5px;">
+                            <span style="font-weight: bold; color: #1f4e79;">Petunjuk Maklumat Perkhidmatan:</span><br>
+                            <strong>PH</strong> = Hari Kelepasan &nbsp;|&nbsp; <strong>AL</strong> = Cuti Tahunan &nbsp;|&nbsp; <strong>MC</strong> = Cuti Sakit &nbsp;|&nbsp; <strong>WD</strong> = Hospitalisasi &nbsp;|&nbsp; <strong>ML</strong> = Cuti Bersalin &nbsp;|&nbsp; <strong>PT</strong> = Cuti Paterniti &nbsp;|&nbsp; <strong>UPL</strong> = Cuti Tanpa Gaji
+                        </div>
                     </div>
                     
                     <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
@@ -1379,7 +1408,6 @@ function paparModalLaporan(jenis) {
         setTimeout(() => tunjukTourElaunPopup(), 400);
         
     } else {
-        // [Kod Laporan Penuh di sini kekal sama - abaikan ubah yang tidak berkaitan]
         let modalHtml = `
         <div id="modalLaporanPenuh" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(2px);">
             <div style="background: white; padding: 25px 30px; border-radius: 10px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; border-top: 5px solid #1f4e79;">
@@ -1387,15 +1415,15 @@ function paparModalLaporan(jenis) {
                 <h3 style="margin-top: 0; color: #1f4e79; border-bottom: 1px dashed #ccc; padding-bottom: 10px; font-size: 16px;">Maklumat Pekerja & Syarikat</h3>
                 <div style="margin-bottom: 15px; margin-top: 15px;">
                     <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">Nama Pekerja:</label>
-                    <input type="text" id="inputNamaLaporan" placeholder="Contoh: Ahmad Bin Abu" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
+                    <input type="text" id="inputNamaLaporan" placeholder="Contoh: Ahmad Bin Abu" value="${vNamaPekerja}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatTitleCase(this.value)">
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">No. Kad Pengenalan / No. Passport:</label>
-                    <input type="text" id="inputICLaporan" placeholder="Contoh: 900101-01-1234 atau A1234567" maxlength="14" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatIC(this.value)">
+                    <input type="text" id="inputICLaporan" placeholder="Contoh: 900101-01-1234 atau A1234567" maxlength="14" value="${vIc}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = formatIC(this.value)">
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #333;">Nama Majikan/Syarikat/Organisasi:</label>
-                    <input type="text" id="inputNamaMajikan" placeholder="Contoh: SYARIKAT ABC SDN BHD" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="inputNamaMajikan" placeholder="Contoh: SYARIKAT ABC SDN BHD" value="${vNamaMajikan}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;" oninput="this.value = this.value.toUpperCase()">
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
                     <button onclick="document.getElementById('modalLaporanPenuh').style.display='none'" style="background: #6c757d; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px;">Batal</button>
@@ -1408,17 +1436,35 @@ function paparModalLaporan(jenis) {
 }
 
 function teruskanJanaLaporan(jenis) {
+    let getV = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+    
+    window.globalNamaMajikan = getV('inputNamaMajikan');
+    window.globalNoDaftarMajikan = getV('inputNoDaftarMajikan');
+    window.globalTempohUpah = getV('inputTempohUpah');
+    window.globalNamaPekerja = getV('inputNamaLaporan');
+    window.globalIcPekerja = getV('inputICLaporan');
+    window.globalNoPekerja = getV('inputNoPekerjaLaporan');
+
     let noDaftarMajikan = ""; let tempohUpah = "";
     let kwspP="", kwspN="", perkesoP="", perkesoN="", sipP="", sipN="", pendahuluanN="", absentH="", absentN=""; 
     let senaraiElaun = []; let senaraiPotongan = [];
     let svcData = {};
 
-    let getV = (id) => document.getElementById(id) ? document.getElementById(id).value.trim() : "";
-    let namaMajikan = getV('inputNamaMajikan');
+    let namaMajikan = window.globalNamaMajikan;
 
     if (jenis === 'penyata') {
         
-        // VALIDASI: Semak Jika Maklumat Perkhidmatan Dikosongkan
+        // --- LETAKKAN KOD PEMINTAS UPL DI SINI ---
+        let inputUPL = document.getElementById('inputUPLSemasa');
+        let nilaiUPL = inputUPL ? (parseFloat(inputUPL.value) || 0) : 0; 
+
+        if (nilaiUPL > 0 && !window.statusUPLDisahkan) {
+            document.getElementById('modalAmaranUPL').style.display = 'flex';
+            return; // Hentikan kod dari berjalan, tunggu user klik Teruskan
+        }
+        window.statusUPLDisahkan = false; // Reset semula status
+        // --- TAMAT KOD PEMINTAS ---
+
         let msLayak = ['modPHLayak', 'modALLayak', 'modMCLayak', 'modWDLayak'];
         let msGuna = ['modPHGuna', 'modALGuna', 'modMCGuna', 'modWDGuna'];
         let isIncomplete = false;
@@ -1430,22 +1476,23 @@ function teruskanJanaLaporan(jenis) {
 
         if (isIncomplete) {
             if(typeof tunjukTourMaklumatPerkhidmatan === 'function') tunjukTourMaklumatPerkhidmatan();
-            return; // Hentikan janaan
+            return; 
         }
 
-        noDaftarMajikan = getV('inputNoDaftarMajikan');
-        tempohUpah = getV('inputTempohUpah');
+        noDaftarMajikan = window.globalNoDaftarMajikan;
+        tempohUpah = window.globalTempohUpah;
         kwspP = getV('inputKWSPPeratus'); kwspN = getV('inputKWSPNilai');
         perkesoP = getV('inputPERKESOPeratus'); perkesoN = getV('inputPERKESONilai');
         sipP = getV('inputSIPPeratus'); sipN = getV('inputSIPNilai');
         pendahuluanN = getV('inputPendahuluanNilai');
         absentH = getV('inputAbsentHari'); absentN = getV('inputAbsentNilai');
 
-svcData = {
+        svcData = {
             phL: getV('modPHLayak'), phG: getV('modPHGuna'), phB: getV('modPHBaki'), phS: getV('inputPHSemasa'),
             alL: getV('modALLayak'), alG: getV('modALGuna'), alB: getV('modALBaki'), alS: getV('inputALSemasa'),
             mcL: getV('modMCLayak'), mcG: getV('modMCGuna'), mcB: getV('modMCBaki'), mcS: getV('inputMCSemasa'),
-            wdL: getV('modWDLayak'), wdG: getV('modWDGuna'), wdB: getV('modWDBaki'), wdS: getV('inputWDSemasa')
+            wdL: getV('modWDLayak'), wdG: getV('modWDGuna'), wdB: getV('modWDBaki'), wdS: getV('inputWDSemasa'),
+            mlS: getV('inputMLSemasa'), ptS: getV('inputPTSemasa'), uplS: getV('inputUPLSemasa')
         };
 
         document.querySelectorAll('#containerElaunModal > div').forEach(row => {
@@ -1471,23 +1518,19 @@ svcData = {
         });
     }
 
-let namaPekerja = getV('inputNamaLaporan');
-    let icPekerja = getV('inputICLaporan');
-    let noPekerja = getV('inputNoPekerjaLaporan');
+    let namaPekerja = window.globalNamaPekerja;
+    let icPekerja = window.globalIcPekerja;
+    let noPekerja = window.globalNoPekerja;
 
-    // JANA ID UNIK UNTUK REKOD INI
     let unikId = 'rekod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
     tambahRekodKeMaklumatGaji(jenis, namaPekerja, namaMajikan, tempohUpah, unikId);
-
-    // KEKALKAN DATA MODAL (Hanya hide, jangan remove)
     document.getElementById('modalLaporanPenuh').style.display = 'none'; 
     
-// TAMBAH unikId DI HUJUNG PARAMETER
     prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenis, { 
         senaraiElaun, senaraiPotongan, kwspP, kwspN, perkesoP, perkesoN, sipP, sipN, pendahuluanN, absentH, absentN, svcData 
     }, unikId);
 }
+
 window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
 
 window.bukaRekodSimpanan = function(e) {
@@ -1551,6 +1594,7 @@ window.kembaliKeKalkulator = function() {
         if (warningBox) warningBox.style.display = "block";
     }
 };
+
 function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) {
     let tbody = document.querySelector('#card-maklumatGaji tbody');
     if (!tbody) return;
@@ -1604,6 +1648,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
     tr.setAttribute('data-pekerja', safeNama);
     tr.setAttribute('data-majikan', safeMajikan);
     
+// PENAMBAHBAIKAN: Penyingkiran butang 'Sambung' yang bertindih fungsi dengan butang Kemaskini dalam 'Buka'
     tr.innerHTML = `
         <td style="padding: 15px; font-size: 13px; font-weight: bold; color: ${warnaTeks}; vertical-align: middle;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
@@ -1614,7 +1659,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
         <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeNama}</strong></td>
         <td style="padding: 15px; font-size: 13px; vertical-align: middle;"><strong style="color: #333;">${safeMajikan}</strong></td>
         <td style="padding: 15px; text-align: center; font-size: 13px; color: #444; vertical-align: middle;">${tempoh || '-'}</td>
-        <td style="padding: 15px; text-align: center; vertical-align: middle;">
+        <td style="padding: 15px; text-align: center; vertical-align: middle; white-space: nowrap;">
             <button data-id="${unikId}" onclick="bukaRekodSimpanan(event)" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📂 Buka</button>
             <button data-id="${unikId}" onclick="hapusRekodSimpanan(event)" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🗑️ Hapus</button>
         </td>
@@ -1625,6 +1670,7 @@ function tambahRekodKeMaklumatGaji(jenis, namaPekerja, majikan, tempoh, unikId) 
 
     tbody.appendChild(tr);
 }
+
 function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPekerja, icPekerja, noPekerja, jenisCetak, xtra, unikId) {
     const senaraiKalkulator = [
         { id: "orpData", tajuk: "Kadar Upah Biasa (ORP)" }, { id: "bakiData", tajuk: "Baki Upah / Gaji" }, 
@@ -1881,7 +1927,7 @@ function prosesJanaLaporanPenuh(namaMajikan, noDaftarMajikan, tempohUpah, namaPe
             </table>
         `;
 
-let htmlPotonganDalaman = "";
+        let htmlPotonganDalaman = "";
         if (xtra) {
             let itemsPotongan = [
                 { label: "Pendahuluan", amt: xtra.pendahuluanN },
@@ -1925,26 +1971,10 @@ let htmlPotonganDalaman = "";
             </div>
         `;
 
-// KUTIP DATA KELAYAKAN DARI XTRA (MODAL POP-UP)
         let svc = xtra.svcData || {};
         let fDay = (val) => (val && val !== "-" && val !== "") ? val : "0";
 
-// TAMBAHAN BARU: JADUAL REKOD CUTI BULAN SEMASA (40% RUANG KANAN)
-        let htmlCutiSemasa = `
-            <div class="report-box" style="padding: 0; border: 1px solid #aaa; display: flex; flex-direction: column; height: 100%;">
-                <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px; margin: 0; border-radius: 0; border-bottom: 1px solid #aaa;">CUTI BULAN SEMASA</div>
-                <div style="flex-grow: 1; padding: 10px 0;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                        <tr><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; width: 75%; text-align: left; white-space: nowrap;">Hari Kelepasan (PH)</td><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; text-align: right; width: 25%; font-weight: bold;">${fDay(svc.phS)} hari</td></tr>
-                        <tr><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; width: 75%; text-align: left; white-space: nowrap;">Cuti Tahunan (AL)</td><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; text-align: right; width: 25%; font-weight: bold;">${fDay(svc.alS)} hari</td></tr>
-                        <tr><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; width: 75%; text-align: left; white-space: nowrap;">Cuti Sakit (MC)</td><td style="padding: 8px 12px; border-bottom: 1px dashed #eee; text-align: right; width: 25%; font-weight: bold;">${fDay(svc.mcS)} hari</td></tr>
-                        <tr><td style="padding: 8px 12px; width: 75%; text-align: left; white-space: nowrap;">Hospitalisasi (WD)</td><td style="padding: 8px 12px; text-align: right; width: 25%; font-weight: bold;">${fDay(svc.wdS)} hari</td></tr>
-                    </table>
-                </div>
-            </div>
-        `;
-
-        // DIKEMASKINI: JADUAL MAKLUMAT PERKHIDMATAN (60% RUANG KIRI)
+        // DIKEMASKINI: JADUAL MAKLUMAT PERKHIDMATAN (Tanpa Petunjuk Di Bawahnya)
         let htmlMaklumatPerkhidmatan = `
             <div class="report-box" style="padding: 0; border: 1px solid #aaa; display: flex; flex-direction: column; height: 100%; border-left: 5px solid #1f4e79;">
                 <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px; margin: 0; border-radius: 0; border-bottom: 1px solid #aaa;">MAKLUMAT BERKAITAN PERKHIDMATAN</div>
@@ -1983,9 +2013,42 @@ let htmlPotonganDalaman = "";
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        `;
+
+        // DIKEMASKINI: JADUAL CUTI SEMASA HORIZONTAL & PETUNJUK LENGKAP
+        let htmlCutiSemasa = `
+            <div class="report-box" style="padding: 0; border: 1px solid #aaa; display: flex; flex-direction: column; width: 100%;">
+                <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px; margin: 0; border-radius: 0; border-bottom: 1px solid #aaa;">REKOD CUTI BULAN SEMASA</div>
+                <div style="padding: 10px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;">
+                        <thead>
+                            <tr style="background: #f4f6f9; border-bottom: 1px solid #ccc;">
+                                <th style="padding: 8px;">PH</th>
+                                <th style="padding: 8px;">AL</th>
+                                <th style="padding: 8px;">MC</th>
+                                <th style="padding: 8px;">WD</th>
+                                <th style="padding: 8px;">ML</th>
+                                <th style="padding: 8px;">PT</th>
+                                <th style="padding: 8px;">UPL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.phS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.alS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.mcS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.wdS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.mlS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.ptS)}</td>
+                                <td style="padding: 8px; font-weight: bold;">${fDay(svc.uplS)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div style="font-size: 10px; color: #555; text-align: left; padding: 6px; border-top: 1px dashed #ccc; margin-top: 5px;">
-                        <span style="font-weight: bold; color: #1f4e79;">Petunjuk:</span>
-                        <strong>PH</strong>=Hari Kelepasan | <strong>AL</strong>=Cuti Tahunan | <strong>MC</strong>=Cuti Sakit | <strong>WD</strong>=Hospitalisasi
+                        <span style="font-weight: bold; color: #1f4e79;">Petunjuk Maklumat Perkhidmatan:</span><br>
+                        <strong>PH</strong>=Hari Kelepasan | <strong>AL</strong>=Cuti Tahunan | <strong>MC</strong>=Cuti Sakit | <strong>WD</strong>=Hospitalisasi | <strong>ML</strong>=Cuti Bersalin | <strong>PT</strong>=Cuti Paterniti | <strong>UPL</strong>=Cuti Tanpa Gaji
                     </div>
                 </div>
             </div>
@@ -2004,8 +2067,7 @@ let htmlPotonganDalaman = "";
         </div>
         ${bersihHtml}
         
-        <!-- DIKEMASKINI: GRID LAYOUT 60(3) : 40(2) SEPERTI YANG DIMINTA -->
-        <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 15px; margin-bottom: 15px; grid-column: 1 / -1; align-items: stretch;">
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; grid-column: 1 / -1; align-items: stretch;">
             ${htmlMaklumatPerkhidmatan}
             ${htmlCutiSemasa}
         </div>
@@ -2021,7 +2083,7 @@ let htmlPotonganDalaman = "";
         contentSeterusnya = htmlLaporan; 
     }
 
-let maklumatSyarikatPekerjaHTML = "";
+    let maklumatSyarikatPekerjaHTML = "";
     if (namaPekerja !== "" || icPekerja !== "" || noPekerja !== "" || namaMajikan !== "") {
         maklumatSyarikatPekerjaHTML = `<div class="report-box" style="grid-column: 1 / -1; margin-bottom: 3pt; border-left: 5px solid #1f4e79;">
             <div class="report-header" style="background:#e8eaed; color:#1a1a1a; text-align: left; padding-left: 10px;">MAKLUMAT PEKERJA & SYARIKAT</div>
@@ -2036,9 +2098,8 @@ let maklumatSyarikatPekerjaHTML = "";
 
     let cssBaru = `.floating-action-bar { position: fixed; top: 25px; right: 25px; display: flex; z-index: 9999; align-items: center; } .kebab-btn { background: #0d6efd; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 24px; cursor: pointer; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; display: flex; justify-content: center; align-items: center; line-height: 1; padding-bottom: 5px; } .kebab-btn:hover { background: #0b5ed7; transform: scale(1.05); } .kebab-dropdown { display: none; position: absolute; right: 0; top: 115%; background-color: white; min-width: 170px; box-shadow: 0px 4px 15px rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; border: 1px solid #ddd; text-align: left; } .kebab-dropdown a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 13px; font-weight: bold; transition: 0.2s; } .kebab-dropdown a:hover { background-color: #f4f6f9; } .kebab-dropdown a:first-child { border-bottom: 1px solid #eee; } @media print { .floating-action-bar, .print-btn-container { display: none !important; } }`;
     
-let cetakHTML = `<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><title>Laporan Pengiraan Akta Kerja 1955</title><style>* { font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; } body { color: #111; line-height: 1.35; padding: 20px; font-size: 11px; background: #fdfdfd; margin-bottom: 80px; } .main-title { text-align: center; margin-bottom: 2px; font-size: 18px; font-weight: bold; border-bottom: 2px solid #222; padding-bottom: 6px; text-transform: uppercase; color: #000; letter-spacing: 1px; } .subtitle { text-align: center; color: #555; margin-top: 5px; margin-bottom: 25px; font-size: 11px; } .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-items: start; } .report-box { border: 1px solid #aaa; padding: 12px; border-radius: 6px; page-break-inside: avoid; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); } .report-header { font-size: 13px; font-weight: 800; text-align: center; background: #e8eaed; padding: 8px; border-bottom: 1px solid #aaa; margin: -12px -12px 12px -12px; border-radius: 6px 6px 0 0; text-transform: uppercase; color: #1a1a1a; letter-spacing: 0.5px; } .report-section-title { font-size: 10px; font-weight: bold; color: #1f4e79; letter-spacing: 0.5px; border-bottom: 1px dashed #ccc; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; } .param-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-bottom: 12px; } .param-label { padding: 3px 0; color: #444; width: 55%; } .param-value { padding: 3px 0; text-align: right; font-weight: 700; color: #000; } .formula-box { background-color: #f4f6f9; border-left: 3px solid #1f4e79; padding: 10px 12px; margin: 12px 0; font-size: 11px; color: #222; border-radius: 0 4px 4px 0; } .formula-title { font-weight: bold; font-size: 10px; color: #1f4e79; margin-bottom: 6px; letter-spacing: 0.5px; } .compact-result .result-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; flex-wrap: wrap; } .compact-result .result-row span { font-size: 11px; color: #333; } .compact-result .result-row strong, #orpBakiAmount { font-size: 12px; color: #000; white-space: nowrap; } .compact-result hr { display: none !important; } .clean-table { width: 100%; border-collapse: collapse; font-size: 11px; border: none; margin-bottom: 5px; } .clean-table td { padding: 4px 2px; border: none; color: #222; } .highlight-row, .result-row[style*="background"] { background: transparent !important; border: 1.5px solid #1f4e79; padding: 8px !important; border-radius: 4px; margin-top: 10px; } .highlight-row span, .result-row[style*="background"] span { color: #1f4e79 !important; font-weight: bold; } .highlight-row strong, .result-row[style*="background"] strong { color: #1f4e79 !important; font-size: 14px !important; } @media print { body { padding: 0; background: #fff; margin-bottom: 0; } .report-box { border: 1px solid #aaa; box-shadow: none; } .report-header, .formula-box, .highlight-row, .result-row[style*="background"] { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } ${cssBaru} </style></head><body><div class="floating-action-bar"><div style="position: relative;"><button class="kebab-btn" onclick="var d = document.getElementById('kebabDropdown'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">&#8942;</button><div id="kebabDropdown" class="kebab-dropdown"><a href="#" onclick="window.close(); return false;">✏️ Kemaskini</a><a href="#" onclick="window.print(); return false;">🖨️ Cetak Laporan</a><a href="#" onclick="if(window.opener){window.opener.tambahKalkulator('maklumatGaji');} window.close(); return false;">💾 Simpan</a></div></div></div>${tajukHeaderHTML}<div class="grid-container">${maklumatSyarikatPekerjaHTML}${contentSeterusnya}</div><div class="print-btn-container" style="text-align: center; margin-top: 30px; grid-column: 1 / -1;"><p style="font-size: 11px; color:#666; font-style: italic;">*Untuk simpan dalam peranti, sila pilih <b>'Save as PDF'</b> pada tetingkap pencetak (Destination).</p></div></body></html>`;
+    let cetakHTML = `<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><title>Laporan Pengiraan Akta Kerja 1955</title><style>* { font-family: 'Segoe UI', Arial, sans-serif; box-sizing: border-box; } body { color: #111; line-height: 1.35; padding: 20px; font-size: 11px; background: #fdfdfd; margin-bottom: 80px; } .main-title { text-align: center; margin-bottom: 2px; font-size: 18px; font-weight: bold; border-bottom: 2px solid #222; padding-bottom: 6px; text-transform: uppercase; color: #000; letter-spacing: 1px; } .subtitle { text-align: center; color: #555; margin-top: 5px; margin-bottom: 25px; font-size: 11px; } .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-items: start; } .report-box { border: 1px solid #aaa; padding: 12px; border-radius: 6px; page-break-inside: avoid; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); } .report-header { font-size: 13px; font-weight: 800; text-align: center; background: #e8eaed; padding: 8px; border-bottom: 1px solid #aaa; margin: -12px -12px 12px -12px; border-radius: 6px 6px 0 0; text-transform: uppercase; color: #1a1a1a; letter-spacing: 0.5px; } .report-section-title { font-size: 10px; font-weight: bold; color: #1f4e79; letter-spacing: 0.5px; border-bottom: 1px dashed #ccc; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; } .param-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-bottom: 12px; } .param-label { padding: 3px 0; color: #444; width: 55%; } .param-value { padding: 3px 0; text-align: right; font-weight: 700; color: #000; } .formula-box { background-color: #f4f6f9; border-left: 3px solid #1f4e79; padding: 10px 12px; margin: 12px 0; font-size: 11px; color: #222; border-radius: 0 4px 4px 0; } .formula-title { font-weight: bold; font-size: 10px; color: #1f4e79; margin-bottom: 6px; letter-spacing: 0.5px; } .compact-result .result-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; flex-wrap: wrap; } .compact-result .result-row span { font-size: 11px; color: #333; } .compact-result .result-row strong, #orpBakiAmount { font-size: 12px; color: #000; white-space: nowrap; } .compact-result hr { display: none !important; } .clean-table { width: 100%; border-collapse: collapse; font-size: 11px; border: none; margin-bottom: 5px; } .clean-table td { padding: 4px 2px; border: none; color: #222; } .highlight-row, .result-row[style*="background"] { background: transparent !important; border: 1.5px solid #1f4e79; padding: 8px !important; border-radius: 4px; margin-top: 10px; } .highlight-row span, .result-row[style*="background"] span { color: #1f4e79 !important; font-weight: bold; } .highlight-row strong, .result-row[style*="background"] strong { color: #1f4e79 !important; font-size: 14px !important; } @media print { body { padding: 0; background: #fff; margin-bottom: 0; } .report-box { border: 1px solid #aaa; box-shadow: none; } .report-header, .formula-box, .highlight-row, .result-row[style*="background"] { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } ${cssBaru} </style></head><body><div class="floating-action-bar"><div style="position: relative;"><button class="kebab-btn" onclick="var d = document.getElementById('kebabDropdown'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">&#8942;</button><div id="kebabDropdown" class="kebab-dropdown"><a href="#" onclick="window.close(); return false;">✏️ Kemaskini</a><a href="#" onclick="window.print(); return false;">🖨️ Cetak Laporan</a><a href="#" onclick="if(window.opener){window.opener.tambahKalkulator('maklumatGaji', true);} window.close(); return false;">💾 Simpan</a></div></div></div>${tajukHeaderHTML}<div class="grid-container">${maklumatSyarikatPekerjaHTML}${contentSeterusnya}</div><div class="print-btn-container" style="text-align: center; margin-top: 30px; grid-column: 1 / -1;"><p style="font-size: 11px; color:#666; font-style: italic;">*Untuk simpan dalam peranti, sila pilih <b>'Save as PDF'</b> pada tetingkap pencetak (Destination).</p></div></body></html>`;
     
-    // ++ KOD SIMPANAN DATA UNTUK FUNGSI BUKA ++
     if (unikId) {
         window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
         window.simpananHTMLGlobal[unikId] = cetakHTML;
@@ -2048,6 +2109,7 @@ let cetakHTML = `<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><tit
     if (!tetingkapCetak) { alert("Pop-up disekat oleh pelayar web (browser) anda. Sila benarkan 'Pop-ups and redirects' untuk laman ini bagi melihat laporan."); return; }
     tetingkapCetak.document.write(cetakHTML); tetingkapCetak.document.close(); tetingkapCetak.focus(); 
 }
+
 // =====================================================
 // 6. SISTEM LOGIN & RESET 
 // =====================================================
@@ -2583,86 +2645,93 @@ function tunjukTourElaunPopup() {
     let existingBox = document.getElementById('tourElaunPopupBox');
     if (existingBox) existingBox.remove();
 
-    let targetContainer = document.getElementById('containerElaunModal');
-    if (!targetContainer) return;
+    // Sasar keseluruhan kotak Elaun di dalam pop-up
+    let targetContainer = document.getElementById('tourTargetElaunPopup');
+    if (!targetContainer) targetContainer = document.getElementById('containerElaunModal');
+    let whiteBox = document.getElementById('modalPenyataWhiteBox');
+    
+    if (!targetContainer || !whiteBox) return;
 
-    let rect = targetContainer.getBoundingClientRect();
-    let isMobile = window.innerWidth <= 768;
+    targetContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
+    // 1. Cipta overlay GELAP (Screen Dim) TEPAT di dalam pop-up putih
     let overlay = document.createElement('div');
     overlay.id = 'tourElaunPopupOverlay';
-    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.65); z-index: 999998; backdrop-filter: blur(2px);';
+    overlay.style.cssText = `position: absolute; top: 0; left: 0; width: 100%; height: ${whiteBox.scrollHeight}px; background: rgba(0, 0, 0, 0.75); z-index: 100; border-radius: 10px; transition: opacity 0.3s;`;
+    whiteBox.appendChild(overlay);
 
+    // 2. Simpan CSS asal target sebelum ditukar
     let origPos = targetContainer.style.position;
     let origZIndex = targetContainer.style.zIndex;
     let origBg = targetContainer.style.background;
     let origShadow = targetContainer.style.boxShadow;
+    let origPadding = targetContainer.style.padding;
 
+    // 3. Serlahkan target (Spotlight) ke atas dari overlay
     targetContainer.style.position = 'relative';
-    targetContainer.style.zIndex = '999999';
+    targetContainer.style.zIndex = '101';
     targetContainer.style.background = '#ffffff';
-    targetContainer.style.boxShadow = '0 0 0 4px #ffffff, 0 0 0 6px #d9534f';
+    targetContainer.style.padding = '15px';
+    targetContainer.style.borderRadius = '8px';
+    targetContainer.style.boxShadow = '0 0 0 4px #ffffff, 0 0 0 6px #d9534f, 0 15px 35px rgba(0,0,0,0.5)';
 
-    let boxWidth = isMobile ? Math.min(360, window.innerWidth - 30) : 380;
-    let boxLeft, boxTop, arrowStyleHtml;
-
-    if (isMobile || (rect.right + boxWidth + 20 > window.innerWidth)) {
-        boxLeft = Math.max(15, Math.min(rect.left + (rect.width / 2) - (boxWidth / 2), window.innerWidth - boxWidth - 15));
-        boxTop = rect.bottom + 12;
-        let arrowLeft = Math.max(20, Math.min(rect.left + (rect.width / 2) - boxLeft - 10, boxWidth - 30));
-        arrowStyleHtml = `
-            <div style="position: absolute; bottom: 100%; left: ${arrowLeft}px; border-width: 10px; border-style: solid; border-color: transparent transparent #d9534f transparent; z-index: 1000001;"></div>
-            <div style="position: absolute; bottom: calc(100% - 3px); left: ${arrowLeft}px; border-width: 10px; border-style: solid; border-color: transparent transparent #fff transparent; z-index: 1000002;"></div>
-        `;
-    } else {
-        boxLeft = rect.right + 15;
-        boxTop = Math.max(15, rect.top);
-        let arrowTop = Math.max(20, Math.min(rect.top + 20 - boxTop, 150));
-        arrowStyleHtml = `
-            <div style="position: absolute; right: 100%; top: ${arrowTop}px; border-width: 10px; border-style: solid; border-color: transparent #d9534f transparent transparent; z-index: 1000001;"></div>
-            <div style="position: absolute; right: calc(100% - 3px); top: ${arrowTop}px; border-width: 10px; border-style: solid; border-color: transparent #fff transparent transparent; z-index: 1000002;"></div>
-        `;
-    }
-
-    let popoverWrapper = document.createElement('div');
-    popoverWrapper.id = 'tourElaunPopupBox';
-    popoverWrapper.style.cssText = `position: fixed; top: ${boxTop}px; left: ${boxLeft}px; width: ${boxWidth}px; z-index: 1000000; animation: floatRightTour 0.3s ease-out;`;
-
-    popoverWrapper.innerHTML = `
-        ${arrowStyleHtml}
-        <div style="background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 18px 20px; border-top: 4px solid #d9534f; color: #333; font-family: sans-serif; text-align: left; box-sizing: border-box; max-height: 80vh; overflow-y: auto;">
-            <h4 style="margin: 0 0 8px 0; color: #1f4e79; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                <span style="background: #1f4e79; color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;">💡</span>
+    // 4. Cipta kotak maklumat (Popover)
+    let popover = document.createElement('div');
+    popover.id = 'tourElaunPopupBox';
+    
+    // PENAMBAHBAIKAN: Posisi popover di SEBELAH KANAN (left: calc(100% + 15px)) & Anak Panah ke KIRI
+    popover.innerHTML = `
+        <div class="tour-popover-box" style="position: absolute; top: 0; left: calc(100% + 15px); background: white; border-radius: 8px; width: 100%; min-width: 320px; max-width: 380px; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 20px; border-top: 6px solid #d9534f; color: #333; font-family: sans-serif; cursor: default; animation: floatRight 0.4s ease-out; z-index: 102; text-align: left;">
+            
+            <!-- Anak Panah Menunjuk Ke Kiri -->
+            <div style="position: absolute; right: 100%; top: 25px; border-width: 10px; border-style: solid; border-color: transparent #d9534f transparent transparent;"></div>
+            <div style="position: absolute; right: calc(100% - 3px); top: 25px; border-width: 10px; border-style: solid; border-color: transparent #fff transparent transparent;"></div>
+            
+            <h4 style="margin: 0 0 10px 0; color: #1f4e79; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                <span style="background: #1f4e79; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">💡</span>
                 Panduan Senarai Elaun
             </h4>
             
-            <p style="margin: 0 0 12px 0; font-size: 11.5px; font-weight: bold; color: #1f4e79; background: #e8eaed; padding: 10px; border-radius: 6px; line-height: 1.45;">
+            <p style="margin: 0 0 15px 0; font-size: 11.5px; font-weight: bold; color: #1f4e79; background: #e8eaed; padding: 10px; border-radius: 4px; line-height: 1.5;">
                 CATATAN: Klik + Tambah. Masukkan semua ELAUN selain yang telah dinyatakan di dalam Bahagian Kalkulator (Sama ada dibayar di dalam waktu kerja normal atau di luar waktu kerja normal).
             </p>
             
-            <button id="btnTutupTourPopup" style="width: 100%; background: #1f4e79; color: white; border: none; padding: 9px; border-radius: 5px; font-weight: bold; font-size: 12.5px; cursor: pointer; transition: 0.2s;">OK, SAYA FAHAM</button>
+            <button id="btnTutupTourPopup" style="width: 100%; background: #1f4e79; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s;">OK, SAYA FAHAM</button>
         </div>
         <style>
-            @keyframes floatRightTour { 
-                0% { opacity: 0; transform: translateX(-10px); } 
-                100% { opacity: 1; transform: translateX(0); } 
-            }
+            @keyframes floatRight { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } }
             #btnTutupTourPopup:hover { background: #153859 !important; }
+            
+            /* Fallback Responsive: Jika skrin terlampau sempit (Mobile), bawa ia ke bawah */
+            @media (max-width: 768px) {
+                .tour-popover-box {
+                    left: 0 !important;
+                    top: calc(100% + 15px) !important;
+                    animation: floatDown 0.4s ease-out !important;
+                }
+                .tour-popover-box > div:nth-child(1) { bottom: 100%; left: 30px; top: auto; right: auto; border-color: transparent transparent #d9534f transparent !important; }
+                .tour-popover-box > div:nth-child(2) { bottom: calc(100% - 6px); left: 30px; top: auto; right: auto; border-color: transparent transparent #fff transparent !important; }
+            }
+            @keyframes floatDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
         </style>
     `;
+    
+    // Masukkan popover ke dalam target
+    targetContainer.appendChild(popover);
 
-    document.body.appendChild(overlay);
-    document.body.appendChild(popoverWrapper);
-
+    // Fungsi pembersihan setelah ditutup
     const tutupTourPopup = () => {
-        overlay.remove();
-        popoverWrapper.remove();
+        if(overlay) overlay.remove();
+        if(popover) popover.remove();
+        
         targetContainer.style.position = origPos;
         targetContainer.style.zIndex = origZIndex;
         targetContainer.style.background = origBg;
         targetContainer.style.boxShadow = origShadow;
+        targetContainer.style.padding = origPadding;
     };
 
+    // Tutup apabila pengguna klik pada overlay gelap atau butang 'OK'
     overlay.addEventListener('click', tutupTourPopup);
     document.getElementById('btnTutupTourPopup').addEventListener('click', tutupTourPopup);
 }
@@ -2753,6 +2822,17 @@ const observerKalkulator = new MutationObserver((mutations) => {
     });
     if (perluSemak) {
         setTimeout(() => window.semakDanTukarElaun(), 50);
+        
+        // PENAMBAHBAIKAN: Papar/Sembunyi butang Simpan Draf secara automatik
+        let kadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
+        let btnSimpan = document.getElementById('butangSimpanDraf');
+        if (btnSimpan) {
+            if (kadAktif.length > 0) {
+                btnSimpan.style.display = 'block';
+            } else {
+                btnSimpan.style.display = 'none';
+            }
+        }
     }
 });
 
@@ -2777,17 +2857,27 @@ if (!window.asal_tambahKalkulator) {
 }
 
 // Pemintas Navigasi Utama (Sidebar & Flyout)
-window.tambahKalkulator = function(templateId) {
+window.tambahKalkulator = function(templateId, skipWarning = false) {
     if (templateId === 'maklumatGaji') {
-        urusPertukaranMenu('REKOD', function() {
+        if (skipWarning) {
+            // Bypass pop-up amaran jika flow "Simpan" dari laporan digunakan
             window.asal_tambahKalkulator(templateId);
-        });
+        } else {
+            // Flow biasa dari klik Sidebar
+            urusPertukaranMenu('REKOD', function() {
+                window.asal_tambahKalkulator(templateId);
+            });
+        }
     } else {
         let modSemasa = dapatkanModSemasa();
         if (modSemasa !== 'NONE') {
-            urusPertukaranMenu(modSemasa, function() {
+            if (skipWarning) {
                 window.asal_tambahKalkulator(templateId);
-            });
+            } else {
+                urusPertukaranMenu(modSemasa, function() {
+                    window.asal_tambahKalkulator(templateId);
+                });
+            }
         } else {
             window.asal_tambahKalkulator(templateId);
         }
@@ -2858,11 +2948,28 @@ document.addEventListener('click', function(e) {
         flyoutAkta.style.display = 'none';
     }
 });
+// =========================================================
+// ENJIN SSOT: BILANGAN HARI DALAM BULAN (SEKSYEN 18A)
+// =========================================================
+window.globalHariBulan18A = 30; // Nilai lalai (default)
+
+window.updateGlobalHariBulan18A = function(element) {
+    let nilaiBaru = element.value;
+    window.globalHariBulan18A = nilaiBaru;
+    
+    // Sync (Selaraskan) kepada semua input 'Bilangan Hari Dalam Bulan' di kad 18A yang lain
+    document.querySelectorAll('.hari-bulan-18a').forEach(input => {
+        if (input !== element && input.value !== nilaiBaru) {
+            input.value = nilaiBaru;
+        }
+    });
+};
 
 // Mengklon Kalkulator Untuk Mod Seksyen 18A
 window.tambahKalkulator18ACustom = function(templateId) {
     document.getElementById('flyoutMenu18ACustom').style.display = 'none';
     window.asal_tambahKalkulator(templateId);
+    
     setTimeout(() => {
         let semuaKad = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card)');
         let newCard = semuaKad[semuaKad.length - 1]; 
@@ -2880,7 +2987,10 @@ window.tambahKalkulator18ACustom = function(templateId) {
             divHari.className = "form-group";
             divHari.style.width = "100%";
             divHari.style.marginBottom = "15px";
-            divHari.innerHTML = `<label style="color:#d9534f; font-weight:bold; display:block; margin-bottom:5px;">Bilangan Hari Dalam Bulan</label><input type="number" class="hari-bulan-18a" placeholder="Contoh: 28, 30, 31" value="30" style="border: 2px solid #d9534f; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box; background: #fffaf9; font-size:14px; font-weight:bold;">`;
+            
+            // PENAMBAHBAIKAN: Nilai ditarik dari globalHariBulan18A & fungsi updateGlobalHariBulan18A diletakkan pada oninput
+            divHari.innerHTML = `<label style="color:#d9534f; font-weight:bold; display:block; margin-bottom:5px;">Bilangan Hari Dalam Bulan</label><input type="number" class="hari-bulan-18a" placeholder="Contoh: 28, 30, 31" value="${window.globalHariBulan18A}" style="border: 2px solid #d9534f; border-radius: 4px; padding: 10px; width: 100%; box-sizing: border-box; background: #fffaf9; font-size:14px; font-weight:bold;" oninput="updateGlobalHariBulan18A(this)">`;
+            
             formGroups[0].parentNode.insertBefore(divHari, formGroups[0]);
         }
 
@@ -2899,7 +3009,8 @@ window.tambahKalkulator18ACustom = function(templateId) {
                 activeCardContext = newCard;
                 try {
                     let hariBulanInput = newCard.querySelector('.hari-bulan-18a');
-                    let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : 26; 
+                    // Mengambil data dari input tempatan yang sentiasa sync dengan global
+                    let hariBulan = hariBulanInput ? (Number(hariBulanInput.value) || 26) : (Number(window.globalHariBulan18A) || 26); 
                     
                     if (templateId === 'orp') calculateORP(e, hariBulan);
                     else if (templateId === 'baki') calculateBakiUpah(e);
@@ -2961,6 +3072,7 @@ function urusPertukaranMenu(modDestinasi, fungsiCallback) {
     let existingModal = document.getElementById('modalAmaranPertukaran');
     if (existingModal) existingModal.remove();
 
+    // HTML Pop-up Dikemaskini (Buang butang Simpan & Ikon Batal/Hapus)
     let boxHtml = `
     <div id="modalAmaranPertukaran" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
         <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 420px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; border-top: 6px solid #f39c12; box-sizing: border-box;">
@@ -2970,30 +3082,22 @@ function urusPertukaranMenu(modDestinasi, fungsiCallback) {
                 Anda mempunyai aktiviti pengiraan di<br><b>${paparanMod}</b>.<br><br>Sila pilih tindakan anda sebelum beralih:
             </p>
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="btnSimpanDraf" style="background: #198754; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(25,135,84,0.2);">💾 Simpan (Ke Senarai Rekod)</button>
-                <button id="btnBatalTukar" style="background: #6c757d; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s;">🛑 Batal (Kekal Di Paparan Sekarang)</button>
-                <button id="btnHapusDraf" style="background: #dc3545; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(220,53,69,0.2);">🗑️ Hapus (Padam Aktiviti)</button>
+                <button id="btnBatalTukar" style="background: #6c757d; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s;">Batal (Kekal Di Paparan Sekarang)</button>
+                <button id="btnHapusDraf" style="background: #dc3545; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(220,53,69,0.2);">Hapus (Padam Aktiviti)</button>
             </div>
         </div>
     </div>
     `;
     document.body.insertAdjacentHTML('beforeend', boxHtml);
 
-    // 1. SIMPAN: Simpan aktiviti semasa ke draf dan bawa pengguna ke SENARAI REKOD
-    document.getElementById('btnSimpanDraf').onclick = function() {
-        document.getElementById('modalAmaranPertukaran').remove();
-        simpanKeDrafDOM(modSemasa);
-        if (typeof window.asal_tambahKalkulator === 'function') {
-            window.asal_tambahKalkulator('maklumatGaji');
-        }
-    };
+    // KOD LOGIK SIMPAN TELAH DIBUANG
 
-    // 2. BATAL: Tutup pop-up amaran dan KEKAL di paparan kalkulator semasa
+    // 1. BATAL: Tutup pop-up amaran dan KEKAL di paparan kalkulator semasa
     document.getElementById('btnBatalTukar').onclick = function() {
         document.getElementById('modalAmaranPertukaran').remove();
     };
 
-    // 3. HAPUS: Padam aktiviti semasa dan teruskan membuka menu/kalkulator pilihan
+    // 2. HAPUS: Padam aktiviti semasa dan teruskan membuka menu/kalkulator pilihan
     document.getElementById('btnHapusDraf').onclick = function() {
         document.getElementById('modalAmaranPertukaran').remove();
         document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)').forEach(k => k.remove());
@@ -3022,7 +3126,12 @@ window.simpanKeDrafDOM = function(modSemasa) {
     kadContainer.className = 'draf-kad-container';
     document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)').forEach(kad => {
         kad.classList.remove('sementara-sembunyi');
-        kad.style.display = ''; 
+        
+        // FIX PENTING: Tambah 'hidden-template' supaya kad draf ini kebal 
+        // daripada dipadam tanpa sengaja oleh querySelectorAll global
+        kad.classList.add('hidden-template'); 
+        
+        kad.style.display = 'none'; 
         kadContainer.appendChild(kad); 
     });
     wrapper.appendChild(kadContainer);
@@ -3113,6 +3222,10 @@ window.bukaDraf = function(e) {
             let kad = kadContainer.firstChild;
             kad.style.display = '';
             kad.classList.remove('sementara-sembunyi');
+            
+            // FIX PENTING: Buang class hidden-template supaya ia aktif berfungsi semula
+            kad.classList.remove('hidden-template'); 
+            
             if(rumusanCard) grid.insertBefore(kad, rumusanCard);
             else grid.appendChild(kad);
         }
@@ -3166,6 +3279,73 @@ window.hapusDraf = function(e) {
         document.querySelectorAll(`tr[data-draf="${drafId}"]`).forEach(tr => tr.remove());
     }
 };
+
+// =========================================================
+// 11. ENJIN BUTANG SIMPAN DRAF MANUAL (FAB)
+// =========================================================
+
+window.simpanDrafManual = function() {
+    // 1. Semak jika ada kalkulator aktif
+    let kadAktif = document.querySelectorAll('.calculator-card:not(.hidden-template):not(.rumusan-card):not(#active-maklumatGaji)');
+    
+    if (kadAktif.length === 0) {
+        // Pop-up Profesional: Tiada Pengiraan
+        let existingWarn = document.getElementById('modalWarnDraf');
+        if (existingWarn) existingWarn.remove();
+        let warnHtml = `
+        <div id="modalWarnDraf" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+            <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); text-align: center; border-top: 6px solid #f39c12; animation: floatUp 0.3s ease-out;">
+                <div style="font-size: 50px; margin-bottom: 10px; line-height: 1;">⚠️</div>
+                <h3 style="margin-top: 0; color: #1f4e79; font-size: 20px; font-weight: 800;">Tiada Pengiraan</h3>
+                <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                    Sila buka sekurang-kurangnya satu kalkulator dan buat pengiraan sebelum menyimpan draf.
+                </p>
+                <button onclick="document.getElementById('modalWarnDraf').remove()" style="background: #1f4e79; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; width: 100%; transition: 0.2s; box-shadow: 0 4px 6px rgba(31,78,121,0.2);">OK, SAYA FAHAM</button>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', warnHtml);
+        return;
+    }
+
+    let modSemasa = dapatkanModSemasa();
+    
+    // 2. Laksanakan penyimpanan ke DOM menggunakan enjin sedia ada
+    simpanKeDrafDOM(modSemasa);
+    
+    // 3. Pop-up Profesional: Draf Berjaya Disimpan (Tengah Skrin)
+    let existingModal = document.getElementById('modalSuccessDraf');
+    if (existingModal) existingModal.remove();
+
+    let modalHtml = `
+    <div id="modalSuccessDraf" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); text-align: center; border-top: 6px solid #10b981; animation: floatUp 0.3s ease-out;">
+            <div style="font-size: 50px; margin-bottom: 10px; line-height: 1;">✅</div>
+            <h3 style="margin-top: 0; color: #1f4e79; font-size: 20px; font-weight: 800;">Berjaya Disimpan!</h3>
+            <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                Draf pengiraan anda telah berjaya disimpan ke dalam <b>Senarai Rekod</b>.
+            </p>
+            <button id="btnOkSuccessDraf" style="background: #10b981; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; width: 100%; transition: 0.2s; box-shadow: 0 4px 6px rgba(16,185,129,0.3);">TUTUP & TERUSKAN</button>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // 4. Proses membersihkan skrin DITANGGUHKAN sehingga pengguna menekan butang TUTUP
+    document.getElementById('btnOkSuccessDraf').onclick = function() {
+        document.getElementById('modalSuccessDraf').remove();
+        
+        // BUG FIX: Baris pemadaman kadAktif.forEach(k => k.remove()); TELAH DIBUANG sepenuhnya
+        
+        if(typeof resetRumusan === 'function') resetRumusan();
+        senaraiElaunGlobal = [];
+        let rc = document.querySelector('.rumusan-card'); 
+        if(rc) rc.style.display = 'none';
+        
+        // Buka menu Senarai Rekod menggunakan "Bypass skipWarning" (true)
+        window.tambahKalkulator('maklumatGaji', true);
+    };
+};
+
 // =====================================================
 // PEMBERSIHAN DUMMY AUTOMATIK PADA INITIALIZATION
 // =====================================================
@@ -3178,3 +3358,200 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
+// ==========================================
+// FUNGSI POP-UP AMARAN UPL (PENYATA GAJI)
+// Tiada fungsi asal yang diganggu.
+// ==========================================
+
+// Variable global untuk semak jika pengguna sudah klik "Teruskan Jana"
+window.statusUPLDisahkan = false; 
+
+function batalAmaranUPL() {
+    // 1. Tutup popup amaran UPL
+    document.getElementById('modalAmaranUPL').style.display = 'none';
+    window.statusUPLDisahkan = false;
+    
+    // 2. Tutup modal Laporan Penuh (Penyata Gaji)
+    let modalPenyata = document.getElementById('modalLaporanPenuh');
+    if(modalPenyata) {
+        modalPenyata.style.display = 'none'; 
+    }
+}
+
+function teruskanJanaUPL() {
+    // 1. Tutup popup amaran UPL
+    document.getElementById('modalAmaranUPL').style.display = 'none';
+    
+    // 2. Setkan status pengesahan kepada true
+    window.statusUPLDisahkan = true;
+    
+    // 3. Panggil semula fungsi cetakan penyata gaji anda
+    teruskanJanaLaporan('penyata'); 
+}
+// =========================================================
+// 12. ENJIN PENYIMPANAN KEKAL (LOCALSTORAGE) - MACAM APP (SaaS)
+// =========================================================
+
+window.simpananHTMLGlobal = window.simpananHTMLGlobal || {};
+
+// 1. FUNGSI UNTUK MEMUAT (LOAD) DATA APABILA SISTEM DIBUKA
+window.muatDataKekal = function() {
+    // A) Muat Kembali Data Fail Laporan/Penyata Gaji
+    let simpananLama = localStorage.getItem('appData_HTMLGlobal');
+    if (simpananLama) { 
+        window.simpananHTMLGlobal = JSON.parse(simpananLama); 
+    }
+
+    // B) Muat Kembali Senarai Jadual Maklumat Gaji (Rekod)
+    let jadualLama = localStorage.getItem('appData_JadualGaji');
+    let tbodyMaklumatGaji = document.querySelector('#card-maklumatGaji tbody');
+    if (jadualLama && tbodyMaklumatGaji) { 
+        tbodyMaklumatGaji.innerHTML = jadualLama; 
+    }
+
+    // C) Muat Kembali Draf Pengiraan
+    let drafLama = localStorage.getItem('appData_Draf');
+    if (drafLama) {
+        let drafContainer = document.getElementById('drafStorageContainer');
+        if (!drafContainer) {
+            drafContainer = document.createElement('div');
+            drafContainer.id = 'drafStorageContainer';
+            drafContainer.style.display = 'none';
+            document.body.appendChild(drafContainer);
+        }
+        drafContainer.innerHTML = drafLama;
+    }
+};
+
+// 2. FUNGSI UNTUK MENYIMPAN (SAVE) DATA SECARA SENYAP (BACKGROUND)
+window.simpanDataKekal = function() {
+    localStorage.setItem('appData_HTMLGlobal', JSON.stringify(window.simpananHTMLGlobal || {}));
+    
+    let tbodyMaklumatGaji = document.querySelector('#card-maklumatGaji tbody');
+    if (tbodyMaklumatGaji) {
+        localStorage.setItem('appData_JadualGaji', tbodyMaklumatGaji.innerHTML);
+    }
+    
+    let drafContainer = document.getElementById('drafStorageContainer');
+    if (drafContainer) {
+        localStorage.setItem('appData_Draf', drafContainer.innerHTML);
+    }
+};
+
+// 3. SISTEM AUTOPILOT (PEMERHATI TANPA GANGGU FUNGSI ASAL)
+function pasangEnjinKekal() {
+    // Muat data lama sebaik sahaja web sedia
+    muatDataKekal();
+    
+    // Gunakan MutationObserver (Menyimpan secara automatik bila ada rekod ditambah/dibuang)
+    const pemerhatiAutoSave = new MutationObserver(() => {
+        simpanDataKekal();
+    });
+
+    let tbodyMaklumatGaji = document.querySelector('#card-maklumatGaji tbody');
+    if (tbodyMaklumatGaji) {
+        pemerhatiAutoSave.observe(tbodyMaklumatGaji, { childList: true, subtree: true });
+    }
+    
+    let drafContainer = document.getElementById('drafStorageContainer');
+    if (!drafContainer) {
+        drafContainer = document.createElement('div');
+        drafContainer.id = 'drafStorageContainer';
+        drafContainer.style.display = 'none';
+        document.body.appendChild(drafContainer);
+    }
+    pemerhatiAutoSave.observe(drafContainer, { childList: true, subtree: true });
+}
+
+// Pastikan skrip berjalan walaupun diletakkan di bawah
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pasangEnjinKekal);
+} else {
+    pasangEnjinKekal();
+}
+
+// 4. PEMBETULAN KECIL (BUG FIX) UNTUK BUTANG HAPUS REKOD LAMA
+// (Memastikan rekod terhapus sepenuhnya dari memori apabila ditekan)
+if (typeof window.hapusRekodSimpanan === "function") {
+    let fungsiHapusAsal = window.hapusRekodSimpanan;
+    window.hapusRekodSimpanan = function(e) {
+        let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
+        let id = btn ? btn.getAttribute('data-id') : null;
+        
+        // Panggil fungsi asal (untuk popup confirm & padam di skrin)
+        fungsiHapusAsal(e);
+        
+        // Padam terus dari senarai Master supaya tak kembali bila direfresh
+        if (id) {
+            let barisMaster = document.querySelector(`#card-maklumatGaji tbody button[data-id="${id}"]`);
+            if (barisMaster && barisMaster.closest('tr')) {
+                barisMaster.closest('tr').remove();
+            }
+            simpanDataKekal(); // Auto-save pemadaman
+        }
+    };
+}
+// =========================================================
+// UPGRADE KOSMETIK: POP-UP CUSTOM UNTUK HAPUS REKOD
+// (Selamat: Overwrite fungsi asal tanpa menjejaskan auto-save)
+// =========================================================
+window.hapusRekodSimpanan = function(e) {
+    let btn = e.currentTarget || (e.target && e.target.closest ? e.target.closest('button') : null);
+    if (!btn) return;
+    
+    let id = btn.getAttribute('data-id');
+    
+    // Buang pop-up lama jika ia kebetulan wujud
+    let existingModal = document.getElementById('modalConfirmHapus');
+    if (existingModal) existingModal.remove();
+
+    // Bina Pop-up Custom Moden
+    let modalHtml = `
+    <div id="modalConfirmHapus" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 9999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(3px);">
+        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); text-align: center; border-top: 6px solid #dc3545; animation: floatUp 0.3s ease-out; box-sizing: border-box;">
+            <div style="font-size: 45px; margin-bottom: 10px; line-height: 1;">🗑️</div>
+            <h3 style="margin-top: 0; color: #dc3545; font-size: 20px; font-weight: 800;">Pengesahan Padam</h3>
+            <p style="font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 25px;">
+                Adakah anda pasti mahu memadam rekod ini?<br>Tindakan ini <b>tidak boleh diundur</b>.
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnBatalHapus" style="flex: 1; background: #6c757d; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s;">Batal</button>
+                <button id="btnSahkanHapus" style="flex: 1; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(220,53,69,0.2);">Ya, Padam</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Tindakan 1: Jika user klik "Batal"
+    document.getElementById('btnBatalHapus').onclick = function() {
+        document.getElementById('modalConfirmHapus').remove();
+    };
+
+    // Tindakan 2: Jika user klik "Ya, Padam"
+    document.getElementById('btnSahkanHapus').onclick = function() {
+        document.getElementById('modalConfirmHapus').remove(); // Tutup Pop-up
+
+        // 1. Padam fail PDF dari memori global
+        if (id && window.simpananHTMLGlobal && window.simpananHTMLGlobal[id]) {
+            delete window.simpananHTMLGlobal[id];
+        }
+
+        // 2. Padam baris dari UI yang sedang dilihat sekarang
+        let barisTerkini = btn.closest('tr');
+        if (barisTerkini) barisTerkini.remove();
+
+        // 3. Padam dari jadual Master (di sebalik skrin) supaya tidak muncul semula
+        if (id) {
+            let barisMaster = document.querySelector(`#card-maklumatGaji tbody button[data-id="${id}"]`);
+            if (barisMaster && barisMaster.closest('tr')) {
+                barisMaster.closest('tr').remove();
+            }
+        }
+
+        // 4. Update data pemadaman ini ke LocalStorage (Autopilot Trigger)
+        if (typeof window.simpanDataKekal === "function") {
+            window.simpanDataKekal();
+        }
+    };
+};
